@@ -11,16 +11,41 @@ public class UsersDAO {
 		dbconnect = new DBConnect();
 	}
 	
-	public String Login(String uid, String upw) {
+	public int Login(String uid, String upw) {
+		Connection con = dbconnect.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		int wpid = -1;
+		try {
+			sql = "select wpid from users where uid=? and upw=password(?)";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, uid);
+			pstmt.setString(2, upw);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				wpid = rs.getInt(1);
+			}
+			
+		}catch(Exception e) {
+
+		}finally {
+			DBClose.close(con,pstmt,rs);
+		}
+		
+		return wpid;
+	}
+	
+	public String getWpname(int wpid) {
 		Connection con = dbconnect.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
 		try {
-			sql = "select uname from users where uid=? and upw=password(?)";
+			sql = "select wpname from workplace where wpid=?";
 			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, uid);
-			pstmt.setString(2, upw);
+			pstmt.setInt(1, wpid);
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
@@ -28,11 +53,10 @@ public class UsersDAO {
 			}
 			
 		}catch(Exception e) {
-			return e.toString();
+
 		}finally {
 			DBClose.close(con,pstmt,rs);
 		}
-		
 		return "";
 	}
 }

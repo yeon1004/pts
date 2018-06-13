@@ -3,9 +3,9 @@ package scheduler;
 public class SchedulerDTO {
 	private int sid;
 	private String sday;
-	private String stime;
-	private String etime;
-	private String able;
+	private double stime;
+	private double etime;
+	private boolean able;
 	private int wpid;
 	
 	public int getSid() {
@@ -17,25 +17,25 @@ public class SchedulerDTO {
 	public String getSday() {
 		return sday;
 	}
-	public void setSday(String sday) {
-		this.sday = sday;
+	public void setSday(String string) {
+		this.sday = string;
 	}
-	public String getStime() {
+	public double getStime() {
 		return stime;
 	}
-	public void setStime(String stime) {
+	public void setStime(double stime) {
 		this.stime = stime;
 	}
-	public String getEtime() {
+	public double getEtime() {
 		return etime;
 	}
-	public void setEtime(String etime) {
+	public void setEtime(double etime) {
 		this.etime = etime;
 	}
-	public String getAble() {
+	public boolean getAble() {
 		return able;
 	}
-	public void setAble(String able) {
+	public void setAble(boolean able) {
 		this.able = able;
 	}
 	public int getWpid() {

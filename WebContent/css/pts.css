@@ -51,30 +51,26 @@ p a:link, a:visited, a:hover{
   text-decoration: none;
 }
 
-#sideNav {
-    text-align: center;
-    min-height: 100vh;
-    height: auto;
-}
-
-#sideNav .nav-item {
-    display: block;
-    width: 100%;
-    font-size: 1.7rem;
-    line-height: 3rem;
-}
-  
 .row.content {
 	margin-top: 0;
 	min-height: 450px;
 	height: auto;
 }
-    
+
 .sidenav {
-	margin-top: 0;
-	padding-top: 20px;
-	background-color: #f1f1f1;
-	height: 100%;
+	text-align: center;
+    height: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 20px;
+    overflow: visible;
+}
+
+.sidenav .nav-item {
+    display: block;
+    width: 100%;
+    font-size: 1.7rem;
+    line-height: 3rem;
 }
     
 footer {
@@ -87,4 +83,22 @@ footer {
 	margin-bottom:0; 
 	border-radius: 0;
 	border: 1px solid rgb(83, 96, 122);
+}
+
+.timetable{
+	border-collapse : collapse;
+	text-align: center;
+	height:auto;
+	margin: 2rem;
+}
+
+.timetable th, td{
+	border: 1px solid gray;
+	width: 10rem;
+	height: 3rem;
+	text-align: center;
+}
+
+.timetable .time{
+	width: 10rem;
 }
