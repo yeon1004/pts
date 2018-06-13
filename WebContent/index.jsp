@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,9 +38,7 @@
           <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="img/profile.jpg" alt="">
         </span>
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      
       <!--메뉴-->
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav">
@@ -52,7 +52,7 @@
             <a class="nav-link js-scroll-trigger" href="#">근무 신청</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#">근무 일정</a>
+            <a class="nav-link js-scroll-trigger" href="#">근무 일정</a>
           </li>
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="#">급여 관리</a>
@@ -66,7 +66,7 @@
 
       <section class="resume-section p-3 p-lg-5 d-flex d-column" id="about">
         <div class="my-auto">
-          main
+        	Main
         </div>
       </section>
 
