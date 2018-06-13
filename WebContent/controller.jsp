@@ -30,23 +30,19 @@ if(action.equals("login"))
 	{
 		%>
 		<script>
-			//alert(" 아이디 또는 비밀번호를 확인하세요!");
-			//history.go(-1);
+			alert(" 아이디 또는 비밀번호를 확인하세요!");
+			history.go(-1);
 		</script>
 		<%
-		out.println(uid + "<br>" + upw + "<br>");
-		out.println("실패 "+uname);
 	}
 	else
 	{
-		out.println(uid + "<br>" + upw + "<br>");
-		out.println("성공 "+uname);
 		//세션등록
-		//session.setAttribute("uid", uid);
-		//session.setAttribute("uname", uname);
+		session.setAttribute("uid", uid);
+		session.setAttribute("uname", uname);
 		
 		//메인으로
-		//response.sendRedirect("./index.jsp");
+		response.sendRedirect("./index.jsp");
 	}
 }
 %>
