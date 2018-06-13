@@ -45,13 +45,13 @@
 		  <div class="form-group">
 		    <label class="control-label col-sm-2" for="uid">아이디</label>
 		    <div class="col-sm-10">
-		      <input type="text" class="form-control" id="uid" placeholder="아이디를 입력하세요.">
+		      <input type="text" class="form-control" id="uid" name="uid" placeholder="아이디를 입력하세요.">
 		    </div>
 		  </div>
 		  <div class="form-group">
-		    <label class="control-label col-sm-2" for="pwd">비밀번호</label>
+		    <label class="control-label col-sm-2" for="upw">비밀번호</label>
 		    <div class="col-sm-10"> 
-		      <input type="password" class="form-control" id="upw" placeholder="비밀번호를 입력하세요.">
+		      <input type="password" class="form-control" id="upw" name="upw" placeholder="비밀번호를 입력하세요.">
 		    </div>
 		  </div>
 		  <div class="form-group"> 

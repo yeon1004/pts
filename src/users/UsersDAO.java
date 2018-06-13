@@ -17,7 +17,7 @@ public class UsersDAO {
 		ResultSet rs = null;
 		
 		try {
-			sql = "SELECT uname FROM users WHERE uid=? and upw=?";
+			sql = "select uname from users where uid=? and upw=password(?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, uid);
 			pstmt.setString(2, upw);
@@ -28,7 +28,7 @@ public class UsersDAO {
 			}
 			
 		}catch(Exception e) {
-			
+			return e.toString();
 		}finally {
 			DBClose.close(con,pstmt,rs);
 		}
