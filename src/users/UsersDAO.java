@@ -85,4 +85,30 @@ public class UsersDAO {
 			DBClose.close(con,pstmt);
 		}
 	}
+	
+	public boolean IsManager(String uid)
+	{
+		Connection con = dbconnect.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			sql = "select ulevel from users where uid=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, uid);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				if(rs.getString(1).equals("°ü¸®ÀÚ"))
+					return true;
+			}
+			
+		}catch(Exception e) {
+
+		}finally {
+			DBClose.close(con,pstmt,rs);
+		}
+		return false;
+	}
 }
+

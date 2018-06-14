@@ -15,7 +15,7 @@ public class SchedulerDAO {
 		dbconnect = new DBConnect();
 	}
 	
-	public ArrayList<SchedulerDTO> getMemberList(int wpid)
+	public ArrayList<SchedulerDTO> getMemberList(String wpid)
 	{
 		Connection con = dbconnect.getConnection();
 		PreparedStatement pstmt = null;
@@ -24,18 +24,17 @@ public class SchedulerDAO {
 		ArrayList<SchedulerDTO> schList = new ArrayList<SchedulerDTO>();
 		
 		try {
-			sql = "select sid, sday, stime, etime, able from scheduler where wpid = ? order by stime, sday";
+			sql = "select sid, sday, stime, etime from scheduler where wpid = ? order by stime, sday";
 			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, wpid);
+			pstmt.setInt(1, Integer.parseInt(wpid));
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
 				SchedulerDTO dto = new SchedulerDTO();
 				dto.setSid(rs.getString(1));
 				dto.setSday(rs.getString(2));
-				dto.setStime(rs.getFloat(3));
-				dto.setEtime(rs.getFloat(4));
-				dto.setAble(rs.getBoolean(5));
+				dto.setStime(rs.getDouble(3));
+				dto.setEtime(rs.getDouble(4));
 				schList.add(dto);
 			}
 		}catch(Exception e) {
@@ -91,5 +90,29 @@ public class SchedulerDAO {
 			DBClose.close(con,pstmt,rs);
 		}
 		return "";
+	}
+	
+	public void InsertNewSchedule(SchedulerDTO sdto)
+	{
+		Connection con = dbconnect.getConnection();
+		PreparedStatement pstmt = null;
+			
+		try {
+			sql = "insert into scheduler(sday, stime, etime, wpid) values(?, ?, ?, ?)";
+			pstmt = con.prepareStatement(sql);
+			
+			//pstmt.setString(1, udto.getUid());
+			pstmt.setString(1, sdto.getSday());
+			pstmt.setDouble(2, sdto.getStime());
+			pstmt.setDouble(3, sdto.getEtime());
+			pstmt.setInt(4, Integer.parseInt(sdto.getWpid()));
+			
+			pstmt.execute();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			DBClose.close(con,pstmt);
+		}
 	}
 }

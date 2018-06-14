@@ -1,5 +1,23 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language = "java" contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
+<%@ page import="java.sql.*,java.text.SimpleDateFormat,java.util.Date" %>
+<%@ page import="java.util.*" %>
+<%@ page import="scheduler.*" %>
+<jsp:useBean id="SchedulerDAO" class="scheduler.SchedulerDAO"/>
+<%@ page import="users.*" %>
+<jsp:useBean id="UsersDAO" class="users.UsersDAO"/>
+<%@ page import="image.*" %>
+<jsp:useBean id="ImageDAO" class="image.ImageDAO"/>
+<%
+request.setCharacterEncoding("UTF-8");
+%>   
+
+<%
+String uid = (String)session.getAttribute("uid");
+String wpname = (String)session.getAttribute("wpname");
+String wpid = (String)session.getAttribute("wpid");
+if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) response.sendRedirect("./login.jsp");
+%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -25,13 +43,13 @@
 <nav class="navbar navbar-inverse bg-ombra" id="navbar-custom">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#" style="color: #ffffff; font-size: 3rem">PTS</a>
+      <a class="navbar-brand" href="index.jsp" style="color: #ffffff; font-size: 3rem">PTS</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
-      	<p class="navbar-text" style="color: #ffffff;">000님</p>
-      	<li><a href="#" style="color: #ffffff;"><span class="glyphicon glyphicon-user"></span> 정보수정</a></li>
-        <li><a href="#" style="color: #ffffff;"><span class="glyphicon glyphicon-log-out"></span> 로그아웃</a></li>
+      	<p class="navbar-text" style="color: #ffffff;"><%=uid %>님</p>
+      	<li><a href="./controller.jsp?action=userinfo" style="color: #ffffff;"><span class="glyphicon glyphicon-user"></span> 내정보</a></li>
+        <li><a href="./controller.jsp?action=logout" style="color: #ffffff;"><span class="glyphicon glyphicon-log-out"></span> 로그아웃</a></li>
       </ul>
     </div>
   </div>
@@ -39,32 +57,32 @@
   
 <div class="container-fluid text-center">    
   <div class="row content">
-		<div class="col-sm-2 sidenav bg-snow" id="sideNav">
+		<div class="col-sm-2 sidenav bg-snow" style="height: 100%; min-height: 100rem;">
+			<%
+			String fileName = ImageDAO.GetFileName("wpid", wpid);
+			String filePath = "./img/"+"\\"+fileName;
+			%>
 			<span>
-				<img class="img-circle" src="img/profile.jpg" alt="Cinque Terre" style="width:70%;">
+				<img class="img-circle" src="<%=filePath %>" style="width:70%;">
 			</span>
-			<h3>상호명</h3>
-			매니저 000<br>
-			<hr style="border: 0.7px solid rgb(232, 213, 41)"><br>
-			<p><a class="nav-item " href="#">근무시간표</a></p>
-			<p><a class="nav-item " href="#">공지사항</a></p>
-			<p><a class="nav-item " href="#">근무신청</a></p>
-			<p><a class="nav-item " href="#">일정관리</a></p>
-			<p><a class="nav-item " href="#">급여관리</a></p>
+			<h3><%=wpname %></h3><br>
+			<p>근무지 코드 : <%=wpid %></p>
+			<hr style="border: 1px solid rgb(232, 213, 41)"><br>
+			<p><a class="nav-item " href="./timetable.jsp">근무 시간표</a></p>
+			<p><a class="nav-item " href="./notice.jsp">공지사항</a></p>
+			<p><a class="nav-item " href="./apply.jsp">근무 신청</a></p>
+			<p><a class="nav-item " href="./pay.jsp">급여 관리</a></p>
 		</div>
-		<div class="col-sm-10 text-left">
+		<div class="col-sm-10 text-left" style="height: 100%; min-height: 100rem;">
 	    	<!-- 컨텐츠 -->
-			<h1>Welcome</h1>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-			<hr>
-			<h3>Test</h3>
-			<p>Lorem ipsum...</p>
+			
 		</div>
 	</div>
 </div>
 
 <footer class="container-fluid text-center bg-slagheap">
-  <p>Footer Text</p>
+  <p>경기도 용인시 처인구 용인대학로 134 우.17092 TEL: 031-332-6471~6 FAX: 031-337-6749<br>
+	Copyrightⓒ Department of Management Information Systems, YongInUniversity All Rights Reserved.</p>
 </footer>
 
 <!-- Bootstrap core JavaScript -->

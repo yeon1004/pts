@@ -33,4 +33,35 @@ public class ImageDAO {
 		}
 		return true;
 	}
+	
+	public String GetFileName(String target, String id)
+	{
+		String filename = "";
+		Connection con = dbconnect.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			if(target.equals("wpid"))
+			{
+				sql = "select filename from images where wpid=?";
+			}
+			else {
+				sql = "select filename from images where nid=?";
+			}
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, id);
+			
+			rs =pstmt.executeQuery();
+			if(rs.next())
+				return rs.getString(1);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			DBClose.close(con,pstmt,rs);
+		}
+		return filename;
+	}
 }
