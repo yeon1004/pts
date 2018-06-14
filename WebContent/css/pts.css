@@ -337,6 +337,10 @@ body{
 	background-color: rgb(244, 245, 233) !important;
 }
 
+.bg-gray{
+	background-color: #cccccc !important;
+}
+
 p a:link, a:visited, a:hover{
   background-color: transparent;
   text-decoration: none;

@@ -4,6 +4,8 @@ create table workplace(
 	wpid int auto_increment,
     wpname varchar(30) not null,
     wpnum varchar(20) not null,
+    opentime double not null default 9,
+    closetime double not null default 18,
     primary key(wpid)
 );
 
@@ -11,7 +13,6 @@ create table users(
 	uid varchar(20),
 	upw varchar(50) not null,
 	uname varchar(10) not null,
-	ubirth date,
 	uphone varchar(20),
 	uaddr varchar(20),
     ulevel enum('관리자','직원') default '직원',
@@ -23,9 +24,8 @@ create table users(
 create table scheduler(
 	sid int auto_increment,
     sday enum('월','화','수','목','금','토','일') not null,
-    stime float not null,
-    etime float not null,
-    able bool default true not null,
+    stime double not null,
+    etime double not null,
     wpid int not null,
     primary key(sid),
     foreign key(wpid) references workplace(wpid) on delete cascade on update cascade
@@ -89,9 +89,12 @@ drop database web04;
 create database web04;
 use web04;
 
-insert into workplace(wpname, wpnum) values('버거퀸 강남점','456-01-12345');
-insert into users(uid, upw, uname, ubirth, uphone, uaddr, ulevel, wpid)
-	values ('test', password('1234'), '테스트', '991231', '010-0000-0000', '경기도 광주시', '관리자', 1);
+insert into workplace(wpname, wpnum, opentime, closetime) values('버거퀸 강남점','456-01-12345', 9, 18);
+insert into workplace(wpname, wpnum, opentime, closetime) values('삼디야 강남점','446-01-12345', 8, 20);
+insert into users(uid, upw, uname, uphone, uaddr, ulevel, wpid)
+	values ('test', password('1234'), '테스트', '010-0000-0000', '경기도 광주시', '관리자', 1);
+insert into users(uid, upw, uname, uphone, uaddr, ulevel, wpid)
+	values ('test1', password('1234'), '테스트', '010-0000-0000', '경기도 광주시', '관리자', 2);
 
 show tables;
 select * from users;

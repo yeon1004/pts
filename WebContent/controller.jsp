@@ -133,6 +133,7 @@ if(action.equals("write"))
 <jsp:useBean id="SchedulerDAO" class="scheduler.SchedulerDAO" scope="page"/>
 <jsp:useBean id="UsersDAO" class="users.UsersDAO" scope="page"/>
 <jsp:useBean id="WorkplaceDAO" class="workplace.WorkplaceDAO" scope="page"/>
+
 <%
 request.setCharacterEncoding("UTF-8");
 
@@ -154,7 +155,7 @@ if(action == "login" || action.equals("login"))
 		
 		//세션등록
 		session.setAttribute("uid", uid);
-		session.setAttribute("wpid", new Integer(wpid));
+		session.setAttribute("wpid", wpid);
 		session.setAttribute("wpname", UsersDAO.getWpname(wpid));
 		
 		out.println("uid : " + session.getAttribute("uid") +"<br>");
@@ -186,7 +187,7 @@ else if(action.equals("wpjoin"))
 	WorkplaceDTO wdto = new WorkplaceDTO();
 	
 	String file="", filename="", originFile="";
-	String wpname="", wpnum="";
+	String wpname="", wpnum="", stime="", etime="";
 	
 	MultipartRequest multi = null;
 			
@@ -200,9 +201,13 @@ else if(action.equals("wpjoin"))
 		);
 		wpname = multi.getParameter("wpname");
 		wpnum = multi.getParameter("wpnum1") + "-" + multi.getParameter("wpnum2") + "-" + multi.getParameter("wpnum3");
+		stime = multi.getParameter("stime");
+		etime = multi.getParameter("etimr");
 		
 		wdto.setWpname(wpname);
 		wdto.setWpnum(wpnum);
+		wdto.setOpentime(Double.parseDouble(stime));
+		wdto.setClosetime(Double.parseDouble(etime));
 		
 		//첨부파일 여러개 가져온다.
 		Enumeration files = multi.getFileNames();
@@ -239,29 +244,52 @@ else if(action.equals("userjoin"))
 	if(!WorkplaceDAO.CheckWpid(wpid))
 	{
 		//근무지틀림
-				out.println("<script> alert('근무지 번호를 확인하세요!'); history.go(-1); </script>");
+		out.println("<script> alert('근무지 번호를 확인하세요!'); history.go(-1); </script>");
 	}
+	else{
+		UsersDTO udto = new UsersDTO();
+		String uid = request.getParameter("uid");
+		udto.setUid(uid);
+		udto.setUpw(request.getParameter("upw"));
+		udto.setUname(request.getParameter("uname"));
+		udto.setUphone(request.getParameter("uphone"));
+		udto.setUaddr(request.getParameter("uaddr"));
+		udto.setUlevel(request.getParameter("ulevel"));
+		udto.setWpid(wpid);
+		
+		UsersDAO.InsertNewUser(udto);
+		
+		//세션등록
+		session.setAttribute("uid", uid);
+		session.setAttribute("wpid", new Integer(wpid));
+		session.setAttribute("wpname", UsersDAO.getWpname(wpid));
+		
+		out.println("<script> alert('가입이 완료되었습니다!'); location.href='index.jsp';</script>");
+	}
+}
+else if(action.equals("newsche"))
+{
+	String sday = request.getParameter("selectedday");
+	String stime_hour = request.getParameter("stime_hour");
+	String stime_minute = request.getParameter("stime_minute");
+	String etime_hour = request.getParameter("etime_hour");
+	String etime_minute = request.getParameter("etime_minute");
+	String wpid = request.getParameter("wpid");
 	
-	UsersDTO udto = new UsersDTO();
-	String uid = request.getParameter("uid");
-	udto.setUid(uid);
-	udto.setUpw(request.getParameter("upw"));
-	udto.setUname(request.getParameter("uname"));
-	udto.setUphone(request.getParameter("uphone"));
-	udto.setUaddr(request.getParameter("uaddr"));
-	udto.setUlevel(request.getParameter("ulevel"));
-	udto.setWpid(wpid);
+	Double d_stime = Double.parseDouble(stime_hour);
+	if(stime_minute.equals("30")) d_stime += 0.5;
+	Double d_etime = Double.parseDouble(etime_hour);
+	if(etime_minute.equals("30")) d_etime += 0.5;
 	
-	UsersDAO.InsertNewUser(udto);
+	SchedulerDTO sdto = new SchedulerDTO();
+	sdto.setSday(sday);
+	sdto.setStime(d_stime);
+	sdto.setEtime(d_etime);
+	sdto.setWpid(wpid);
 	
-	out.println("<script> alert('가입이 완료되었습니다!'); </script>");
+	SchedulerDAO.InsertNewSchedule(sdto);
 	
-	//세션등록
-	session.setAttribute("uid", uid);
-	session.setAttribute("wpid", new Integer(wpid));
-	session.setAttribute("wpname", UsersDAO.getWpname(wpid));
-	
-	response.sendRedirect("index.jsp");
+	response.sendRedirect("./newtimetable.jsp");
 }
 >>>>>>> branch 'master' of https://github.com/yeon1004/pts
 %>

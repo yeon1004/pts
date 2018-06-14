@@ -140,9 +140,13 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 <%@ page language = "java" contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
 <%@ page import="java.sql.*,java.text.SimpleDateFormat,java.util.Date" %>
 <%@ page import="java.util.*" %>
-<%@ page import="scheduler.*" %>
-<jsp:useBean id="dao" class="scheduler.SchedulerDAO"/>
 
+<%@ page import="scheduler.*" %>
+<jsp:useBean id="SchedulerDAO" class="scheduler.SchedulerDAO"/>
+<%@ page import="users.*" %>
+<jsp:useBean id="UsersDAO" class="users.UsersDAO"/>
+<%@ page import="image.*" %>
+<jsp:useBean id="ImageDAO" class="image.ImageDAO"/>
 <%
 request.setCharacterEncoding("UTF-8");
 %>   
@@ -150,9 +154,8 @@ request.setCharacterEncoding("UTF-8");
 <%
 String uid = (String)session.getAttribute("uid");
 String wpname = (String)session.getAttribute("wpname");
-int wpid=-1;
+String wpid = (String)session.getAttribute("wpid");
 if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) response.sendRedirect("./login.jsp");
-else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -180,7 +183,7 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 <nav class="navbar navbar-inverse bg-ombra" id="navbar-custom">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#" style="color: #ffffff; font-size: 3rem">PTS</a>
+      <a class="navbar-brand" href="index.jsp" style="color: #ffffff; font-size: 3rem">PTS</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
@@ -195,15 +198,21 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 <div class="container-fluid text-center">    
   <div class="row content">
 		<div class="col-sm-2 sidenav bg-snow" style="height: 100%; min-height: 100rem;">
+			<%
+			String fileName = ImageDAO.GetFileName("wpid", wpid);
+			String filePath = "./img/"+"\\"+fileName;
+			%>
 			<span>
-				<img class="img-circle" src="img/profile.jpg" alt="Cinque Terre" style="width:70%;">
+				<img class="img-circle" src="<%=filePath %>" style="width:70%;">
 			</span>
 			<h3><%=wpname %></h3><br>
+			<p>근무지 코드 : <%=wpid %></p>
+			
 			<hr style="border: 1px solid rgb(232, 213, 41)"><br>
-			<p><a class="nav-item " href="#">근무 시간표</a></p>
-			<p><a class="nav-item " href="#">공지사항</a></p>
-			<p><a class="nav-item " href="#">근무 신청</a></p>
-			<p><a class="nav-item " href="#">급여 관리</a></p>
+			<p><a class="nav-item " href="./timetable.jsp">근무 시간표</a></p>
+			<p><a class="nav-item " href="./notice.jsp">공지사항</a></p>
+			<p><a class="nav-item " href="./apply.jsp">근무 신청</a></p>
+			<p><a class="nav-item " href="./pay.jsp">급여 관리</a></p>
 		</div>
 		<div class="col-sm-10 text-left" style="height: 100%; min-height: 100rem;">
 	    	<!-- 컨텐츠 -->
@@ -212,7 +221,7 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 			<table class="timetable text-center col-sm-10">
 				<tr><th class="time">time</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th><th>일</th></tr>
 				<%
-				ArrayList<SchedulerDTO> schList = dao.getMemberList(wpid);
+				ArrayList<SchedulerDTO> schList = SchedulerDAO.getMemberList(wpid);
 				
 				String[] days = {"월","화","수","목","금","토","일"};
 				int[] dayCnts = { 0, 0, 0, 0, 0, 0, 0};
@@ -238,31 +247,52 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 					%>
 					<tr>
 					<td><%=stime %> ~ <%=etime %></td><%
-					for(int dayIdx = 0; dayIdx < days.length; dayIdx++)
-					{
-						if(schList.size() == 0) break;
-						SchedulerDTO sdto = schList.get(listIdx);
-						if(sdto.getSday().equals(days[dayIdx]) && sdto.getStime() == time)
+						for(int dayIdx = 0; dayIdx < days.length; dayIdx++)
 						{
-							double diff = (schList.get(listIdx).getEtime() - schList.get(listIdx).getStime()) * 2;
-							String applyUserName = dao.getApplyUserName(sdto.getSid());
-							%><td rowspan="<%=(int)diff%>"><%=applyUserName %></td><%
-							if(listIdx < schList.size() - 1) listIdx += 1;
-							dayCnts[dayIdx] = (int)diff;
+							if(schList.size() == 0) 
+							{
+								if(dayIdx == 0 && time == openTime)
+								{
+									double rowspan = (closeTime-openTime) * 2;
+									%>
+									<td colspan = "<%=days.length%>" rowspan="<%=rowspan%>">
+										등록된 근무 일정이 없습니다.
+										<%
+										if(UsersDAO.IsManager(uid))
+										{
+											%>
+											<br><br><a href="newschedule.jsp">시간표 등록</a>
+											<%
+										}
+										%>
+									</td>
+									<%
+								}
+							}
+							else{
+								SchedulerDTO sdto = schList.get(listIdx);
+								if(sdto.getSday().equals(days[dayIdx]) && sdto.getStime() == time)
+								{
+									double diff = (schList.get(listIdx).getEtime() - schList.get(listIdx).getStime()) * 2;
+									String applyUserName = SchedulerDAO.getApplyUserName(sdto.getSid());
+									if(listIdx < schList.size() - 1) listIdx++;
+									dayCnts[dayIdx] = (int)diff;
+									%><td rowspan="<%=(int)diff%>"><%=applyUserName %></td><%
+								}
+								else if(dayCnts[dayIdx] > 1)
+								{
+									dayCnts[dayIdx]--;
+								}
+								else{
+									%><td class="bg-coldbreeze"></td><%
+								}
+							}
 						}
-						else if(dayCnts[dayIdx] > 0)
-						{
-							dayCnts[dayIdx]--;
-						}
-						else{
-							%><td class="bg-coldbreeze"></td><%
-						}
-					}
+					
 					%>
 					</tr>
 					<%
 				}
-				
 				%>
 			</table>
 		</div>
