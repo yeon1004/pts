@@ -31,7 +31,7 @@ public class SchedulerDAO {
 			
 			while(rs.next()) {
 				SchedulerDTO dto = new SchedulerDTO();
-				dto.setSid(rs.getInt(1));
+				dto.setSid(rs.getString(1));
 				dto.setSday(rs.getString(2));
 				dto.setStime(rs.getFloat(3));
 				dto.setEtime(rs.getFloat(4));
@@ -69,16 +69,17 @@ public class SchedulerDAO {
 		return -1;
 	}
 	
-	public String getApplyUserName(int sid)
+	public String getApplyUserName(String sid)
 	{
 		Connection con = dbconnect.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
+		int id = Integer.parseInt(sid);
 		try {
 			sql = "select users.uname from scheduler, apply, users where scheduler.sid=? and scheduler.sid = apply.sid and apply.uid=users.uid";
 			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, sid);
+			pstmt.setInt(1, id);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {

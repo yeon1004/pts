@@ -5,6 +5,10 @@
 <jsp:useBean id="dao" class="scheduler.SchedulerDAO"/>
 
 <%
+request.setCharacterEncoding("UTF-8");
+%>   
+
+<%
 String uid = (String)session.getAttribute("uid");
 String wpname = (String)session.getAttribute("wpname");
 int wpid=-1;
@@ -60,7 +64,6 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 			<p><a class="nav-item " href="#">근무 시간표</a></p>
 			<p><a class="nav-item " href="#">공지사항</a></p>
 			<p><a class="nav-item " href="#">근무 신청</a></p>
-			<p><a class="nav-item " href="#">근무 일정 관리</a></p>
 			<p><a class="nav-item " href="#">급여 관리</a></p>
 		</div>
 		<div class="col-sm-10 text-left" style="height: 100%; min-height: 100rem;">
@@ -98,6 +101,7 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 					<td><%=stime %> ~ <%=etime %></td><%
 					for(int dayIdx = 0; dayIdx < days.length; dayIdx++)
 					{
+						if(schList.size() == 0) break;
 						SchedulerDTO sdto = schList.get(listIdx);
 						if(sdto.getSday().equals(days[dayIdx]) && sdto.getStime() == time)
 						{

@@ -1,16 +1,17 @@
 package pay;
 
 public class PayDTO {
-	private int pid;
+	private String pid;
 	private String uid;
 	private String sdate;
 	private String edate;
 	private int total;
 	private String pstatus;
-	public int getPid() {
+	
+	public String getPid() {
 		return pid;
 	}
-	public void setPid(int pid) {
+	public void setPid(String pid) {
 		this.pid = pid;
 	}
 	public String getUid() {
@@ -43,4 +44,5 @@ public class PayDTO {
 	public void setPstatus(String pstatus) {
 		this.pstatus = pstatus;
 	}
+	
 }

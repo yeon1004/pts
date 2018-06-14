@@ -11,7 +11,7 @@ public class UsersDAO {
 		dbconnect = new DBConnect();
 	}
 	
-	public int Login(String uid, String upw) {
+	public String Login(String uid, String upw) {
 		Connection con = dbconnect.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -34,10 +34,10 @@ public class UsersDAO {
 			DBClose.close(con,pstmt,rs);
 		}
 		
-		return wpid;
+		return new Integer(wpid).toString();
 	}
 	
-	public String getWpname(int wpid) {
+	public String getWpname(String wpid) {
 		Connection con = dbconnect.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -45,7 +45,7 @@ public class UsersDAO {
 		try {
 			sql = "select wpname from workplace where wpid=?";
 			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, wpid);
+			pstmt.setInt(1, Integer.parseInt(wpid));
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
@@ -58,5 +58,31 @@ public class UsersDAO {
 			DBClose.close(con,pstmt,rs);
 		}
 		return "";
+	}
+	
+	public void InsertNewUser(UsersDTO udto)
+	{
+		Connection con = dbconnect.getConnection();
+		PreparedStatement pstmt = null;
+			
+		try {
+			sql = "insert into users(uid, upw, uname, uphone, uaddr, ulevel, wpid) values(?, password(?), ?, ?, ?, ?, ?)";
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, udto.getUid());
+			pstmt.setString(2, udto.getUpw());
+			pstmt.setString(3, udto.getUname());
+			pstmt.setString(4, udto.getUphone());
+			pstmt.setString(5, udto.getUaddr());
+			pstmt.setString(6, udto.getUlevel());
+			pstmt.setInt(7, Integer.parseInt(udto.getWpid()));
+			
+			pstmt.execute();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			DBClose.close(con,pstmt);
+		}
 	}
 }

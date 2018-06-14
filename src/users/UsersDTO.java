@@ -4,11 +4,10 @@ public class UsersDTO {
 	private String uid;
 	private String upw;
 	private String uname;
-	private String ubirth;
 	private String uphone;
 	private String uaddr;
 	private String ulevel;
-	private int wpid;
+	private String wpid;
 	
 	public String getUid() {
 		return uid;
@@ -28,12 +27,6 @@ public class UsersDTO {
 	public void setUname(String uname) {
 		this.uname = uname;
 	}
-	public String getUbirth() {
-		return ubirth;
-	}
-	public void setUbirth(String ubirth) {
-		this.ubirth = ubirth;
-	}
 	public String getUphone() {
 		return uphone;
 	}
@@ -52,10 +45,10 @@ public class UsersDTO {
 	public void setUlevel(String ulevel) {
 		this.ulevel = ulevel;
 	}
-	public int getWpid() {
+	public String getWpid() {
 		return wpid;
 	}
-	public void setWpid(int wpid) {
+	public void setWpid(String wpid) {
 		this.wpid = wpid;
 	}
 }

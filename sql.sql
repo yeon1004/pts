@@ -1,7 +1,7 @@
 use web04;
 
 create table workplace(
-	wpid int,
+	wpid int auto_increment,
     wpname varchar(30) not null,
     wpnum varchar(20) not null,
     primary key(wpid)
@@ -22,7 +22,6 @@ create table users(
 
 create table scheduler(
 	sid int auto_increment,
-    group_num int not null,
     sday enum('월','화','수','목','금','토','일') not null,
     stime float not null,
     etime float not null,
@@ -78,12 +77,13 @@ create table pay(
 	iid int auto_increment,
     nid int default null,
     wpid int default null,
-    filepath varchar(100) not null,
-    fimename varchar(100) not null,
+    filename varchar(100) not null,
     primary key(iid),
     foreign key(nid) references notice(nid),
     foreign key(wpid) references workplace(wpid)
  );
+ 
+ drop table images;
 
 drop database web04;
 create database web04;
@@ -91,7 +91,7 @@ use web04;
 
 insert into workplace(wpname, wpnum) values('버거퀸 강남점','456-01-12345');
 insert into users(uid, upw, uname, ubirth, uphone, uaddr, ulevel, wpid)
-	values ('test', password('1234'), '테스트', '991231', '010-0000-0000', '경기도 광주시', '관리자', 0);
+	values ('test', password('1234'), '테스트', '991231', '010-0000-0000', '경기도 광주시', '관리자', 1);
 
 show tables;
 select * from users;
@@ -107,25 +107,31 @@ select wpname from workplace where wpid = (select wpid from users where uid='tes
 select users.wpid, workplace.wpname from users, workplace where uid='test' and upw=password('1234') and users.wpid=workplace.wpid;
 select wpname from workspace where wpid=0;
 
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '월',  9.0, 14.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '월',  14.0, 18.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '화',  9.0, 12.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '화',  12.0, 18.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '수',  9.0, 16.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '수',  16.0, 18.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '목',  9.0, 14.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '목',  14.0, 16.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '목',  16.0, 18.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '금',  9.0, 10.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '금',  10.0, 18.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '토',  9.0, 13.5, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '토',  13.5, 18.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '일',  9.0, 14.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '일',  14.0, 18.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('월',  9.0, 14.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('월',  14.0, 18.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('화',  9.0, 12.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('화',  12.0, 18.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('수',  9.0, 16.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('수',  16.0, 18.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('목',  9.0, 14.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('목',  14.0, 16.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('목',  16.0, 18.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('금',  9.0, 10.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('금',  10.0, 18.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('토',  9.0, 13.5, 1);
+insert into scheduler(sday, stime, etime, wpid) values('토',  13.5, 18.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('일',  9.0, 14.0, 1);
+insert into scheduler(sday, stime, etime, wpid) values('일',  14.0, 18.0, 1);
 select * from scheduler;
+
 
 select sid, sday, stime, etime, able from scheduler where wpid = 0 order by stime, sday;
 
 insert into apply(astatus, sid, uid) values ('승인', 10, 'test');
 select * from apply;
 select users.uname from scheduler, apply, users where scheduler.sid=10 and scheduler.sid = apply.sid and apply.uid=users.uid;
+
+select * from workplace;
+select * from images;
+insert into workplace(wpname, wpnum) values('333', '33-333-33333');
+insert into workplace(wpid, filename) values(5, '222.jpg');
