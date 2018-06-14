@@ -36,27 +36,23 @@
 	
 </head>
 <body>
-<table class="wrapper text-center">
+<table class="wrapper text-center"  style="background-color: #f4f5e9;">
 	<tr><td></td><td></td><td></td></tr>
 	<tr><td></td><td>
 		<!-- 로그인폼 -->
-		<h1>PTS</h1><br>
+		<img src="img/pts.png" width="300px"/>
 		<form name="loginForm" class="form-horizontal" action="./controller.jsp" method="post">
-		  <div class="form-group">
-		    <label class="control-label col-sm-2" for="uid">ID</label>
-		    <div class="col-sm-10">
+		  <div class="form-group form-group-lg">
+		    <label class="control-label col-sm-2" for="uid">Username</label>
+
 		      <input type="text" class="form-control" id="uid" name="uid" placeholder="아이디를 입력하세요.">
-		    </div>
-		  </div>
-		  <div class="form-group">
-		    <label class="control-label col-sm-2" for="upw">PW</label>
-		    <div class="col-sm-10"> 
+
+		    <label class="control-label col-sm-2" for="upw">Password</label>
 		      <input type="password" class="form-control" id="upw" name="upw" placeholder="비밀번호를 입력하세요.">
-		    </div>
 		  </div>
 		  <div class="form-group"> 
 		    <div class="col-sm-12 text-center">
-		      <button type="button" class="btn btn-info" onclick="check();" style="width:20rem;")>로그인</button>
+		      <button type="button" class="btn btn-lg" style="background-color: #e8d529;" onclick="check();" style="width:20rem;")>로그인</button>
 		    </div>
 		  </div>
 		  <input type="hidden" name="action" value="login"/>

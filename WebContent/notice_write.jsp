@@ -1,21 +1,27 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*,java.text.SimpleDateFormat,java.util.Date"%>
+<%@ page language = "java" contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
+<%@ page import="java.sql.*,java.text.SimpleDateFormat,java.util.Date" %>
 <%@ page import="java.util.*" %>
+<%@ page import="scheduler.*" %>
 <%@ page import="notice.*" %>
-
+<jsp:useBean id="SchedulerDAO" class="scheduler.SchedulerDAO"/>
+<%@ page import="users.*" %>
+<jsp:useBean id="UsersDAO" class="users.UsersDAO"/>
+<%@ page import="image.*" %>
+<jsp:useBean id="ImageDAO" class="image.ImageDAO"/>
 <jsp:useBean id="dao" class="notice.NoticeDAO"/>
-<jsp:useBean id="dto" class="notice.NoticeDTO"/>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%
+request.setCharacterEncoding("UTF-8");
+%>   
 
 <%
 String uid = (String)session.getAttribute("uid");
 String wpname = (String)session.getAttribute("wpname");
-int wpid=-1;
+String wpid = (String)session.getAttribute("wpid");
 if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) response.sendRedirect("./login.jsp");
-else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 %>
 
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -25,6 +31,8 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
     
 <!-- Custom CSS -->
 <link href="./css/pts.css" rel="stylesheet">
+<link rel="stylesheet" href="css/bootstrap.css">
+<link rel="stylesheet" href="css/custom.css">
 
 <!-- Custom Fonts -->
 <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic" rel="stylesheet">
@@ -33,10 +41,7 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  
-
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<script>
+  <script>
 	tinymce.init({ selector:'textarea' });
 	function check(){
 		var f = document.writeForm;
@@ -48,8 +53,8 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 			alert("내용을 입력하세요.");
 			return;
 		}
+		
 		f.submit();
-	
 	}
 </script>
 <title>PTS - Part time Scheduler</title>
@@ -58,7 +63,7 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 <nav class="navbar navbar-inverse bg-ombra" id="navbar-custom">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#" style="color: #ffffff; font-size: 3rem">PTS</a>
+      <a class="navbar-brand" href="index.jsp" style="color: #ffffff; font-size: 3rem">PTS</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
@@ -73,50 +78,57 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 <div class="container-fluid text-center">    
   <div class="row content">
 		<div class="col-sm-2 sidenav bg-snow" style="height: 100%; min-height: 100rem;">
+			<%
+			String fileName = ImageDAO.GetFileName("wpid", wpid);
+			String filePath = "./img/"+"\\"+fileName;
+			%>
 			<span>
-				<img class="img-circle" src="img/profile.jpg" alt="Cinque Terre" style="width:70%;">
+				<img class="img-circle" src="<%=filePath %>" style="width:70%;">
 			</span>
 			<h3><%=wpname %></h3><br>
+			<p>근무지 코드 : <%=wpid %></p>
 			<hr style="border: 1px solid rgb(232, 213, 41)"><br>
-			<p><a class="nav-item " href="#">근무 시간표</a></p>
-			<p><a class="nav-item " href="notice.jsp">공지사항</a></p>
-			<p><a class="nav-item " href="#">근무 신청</a></p>
-			<p><a class="nav-item " href="#">급여 관리</a></p>
+			<p><a class="nav-item " href="./timetable.jsp">근무 시간표</a></p>
+			<p><a class="nav-item " href="./notice.jsp">공지사항</a></p>
+			<p><a class="nav-item " href="./apply.jsp">근무 신청</a></p>
+			<p><a class="nav-item " href="./pay.jsp">급여 관리</a></p>
 		</div>
-<div class="col-sm-10 text-left">
-<!-- 컨텐츠 -->
-<div class='wrap'>
-	
-		<div>
-		<a href='notice.jsp'><h1>공지사항</h1></a>
-		</div>
+		<div class="col-sm-10 text-left" style="height: 100%; min-height: 100rem;">
+	    	<!-- 컨텐츠 -->
+			<div><a href='notice.jsp'><h1>공지사항</h1></a></div>
 	<div class='cont'>
 		<form name="writeForm" action="controller.jsp?action=write" method="post" enctype="multipart/form-data">
-		<table id="tbWrite">
-			<tr>
-				<th>제목</th>
-				<td><input type="text" id="txtTitle" name="title"></td>
-			</tr>
-			<tr>
-				<td colspan="2"> 		  
-					<!-- 내용 -->	
-					<textarea id='tacont' name="cont"></textarea>
-				</td>
-			</tr>
-
-		</table><br>
+		<table id="tbWrite" class="table talbe-striped" style="text-align: center; border: 1px solid #dddddd">
+			
+				<tr>
+					<th colspan="2" style="text-align: center;">글 작성하기</th>
+				</tr>
+				 
+					<tr>
+						<td><input type="text" class="form-control" placeholder="글 제목" name="title" maxlength="50"></td>
+					</tr>	
+						<tr>
+						<td><textarea class="form-control" placeholder="글 내용" name="cont" maxlength="2048" style="height:350px; "></textarea></td>
+						</tr>
+			
+					
+				</table> 
 		<button type="button" onclick="check();" style="width: 200px; height: 60px; background-color: #e8d529; color: #000000; font-size: 15px; border: 0;">등록</button>
 		<button type="reset" style="width: 200px; height: 60px; background-color: #2C3250; color: white; font-size: 15px; border: 0;">취소</button>
-		<input type="hidden" name="writer" value="<%=dto.getUid()%>"/>
+		<input type="hidden" name="writer" value="<%=uid%>"/>
 		</form>
 	</div>
 </div>
 </div>
 </div>
-</div>
+
 <footer class="container-fluid text-center bg-slagheap">
-  <p>Footer Text</p>
+  <p>경기도 용인시 처인구 용인대학로 134 우.17092 TEL: 031-332-6471~6 FAX: 031-337-6749<br>
+	Copyrightⓒ Department of Management Information Systems, YongInUniversity All Rights Reserved.</p>
 </footer>
+
+<!-- Bootstrap core JavaScript -->
+<script src="./js/bootstrap.min.js"></script>
 
 </body>
 </html>

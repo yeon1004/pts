@@ -5,10 +5,12 @@
 <%@ page import="scheduler.*" %>
 <%@ page import="users.*" %>
 <%@ page import="workplace.*" %>
+<%@ page import="notice.*" %>
 
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 
+<jsp:useBean id="NoticeDAO" class="notice.NoticeDAO" scope="page"/>
 <jsp:useBean id="ImageDAO" class="image.ImageDAO" scope="page"/>
 <jsp:useBean id="SchedulerDAO" class="scheduler.SchedulerDAO" scope="page"/>
 <jsp:useBean id="UsersDAO" class="users.UsersDAO" scope="page"/>
@@ -171,4 +173,31 @@ else if(action.equals("newsche"))
 	
 	response.sendRedirect("./newtimetable.jsp");
 }
+
+//리스트
+else if(action.equals("list"))
+{
+	pageContext.forward("notice.jsp");
+}
+
+//글쓰기
+else if(action.equals("write"))
+{
+		String writer="";
+		String title="";
+		String cont="";
+		
+		NoticeDTO bdto = new NoticeDTO();
+		bdto.setNtitle(title);
+		bdto.setUid(writer);
+		bdto.setNcont(cont);
+		
+		if(NoticeDAO.insertWrite(bdto)) {
+			out.println("<script>alert('등록되었습니다!'); location.href='controller.jsp?action=list';</script>");
+		}
+		else {
+			throw new Exception("디비 등록 중 문제 발생");
+		}
+}
+
 %>
