@@ -22,7 +22,6 @@ create table users(
 
 create table scheduler(
 	sid int auto_increment,
-    group_num int not null,
     sday enum('월','화','수','목','금','토','일') not null,
     stime float not null,
     etime float not null,
@@ -107,21 +106,21 @@ select wpname from workplace where wpid = (select wpid from users where uid='tes
 select users.wpid, workplace.wpname from users, workplace where uid='test' and upw=password('1234') and users.wpid=workplace.wpid;
 select wpname from workspace where wpid=0;
 
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '월',  9.0, 14.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '월',  14.0, 18.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '화',  9.0, 12.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '화',  12.0, 18.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '수',  9.0, 16.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '수',  16.0, 18.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '목',  9.0, 14.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '목',  14.0, 16.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '목',  16.0, 18.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '금',  9.0, 10.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '금',  10.0, 18.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '토',  9.0, 13.5, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '토',  13.5, 18.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '일',  9.0, 14.0, 0);
-insert into scheduler(group_num, sday, stime, etime, wpid) values(1, '일',  14.0, 18.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('월',  9.0, 14.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('월',  14.0, 18.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('화',  9.0, 12.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('화',  12.0, 18.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('수',  9.0, 16.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('수',  16.0, 18.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('목',  9.0, 14.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('목',  14.0, 16.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('목',  16.0, 18.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('금',  9.0, 10.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('금',  10.0, 18.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('토',  9.0, 13.5, 0);
+insert into scheduler(sday, stime, etime, wpid) values('토',  13.5, 18.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('일',  9.0, 14.0, 0);
+insert into scheduler(sday, stime, etime, wpid) values('일',  14.0, 18.0, 0);
 select * from scheduler;
 
 select sid, sday, stime, etime, able from scheduler where wpid = 0 order by stime, sday;

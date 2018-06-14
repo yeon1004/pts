@@ -57,10 +57,9 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 			</span>
 			<h3><%=wpname %></h3><br>
 			<hr style="border: 1px solid rgb(232, 213, 41)"><br>
-			<p><a class="nav-item " href="#">근무 시간표</a></p>
-			<p><a class="nav-item " href="#">공지사항</a></p>
+			<p><a class="nav-item " href="timetable.jsp">근무 시간표</a></p>
+			<p><a class="nav-item " href="notice.jsp">공지사항</a></p>
 			<p><a class="nav-item " href="#">근무 신청</a></p>
-			<p><a class="nav-item " href="#">근무 일정 관리</a></p>
 			<p><a class="nav-item " href="#">급여 관리</a></p>
 		</div>
 		<div class="col-sm-10 text-left" style="height: 100%; min-height: 100rem;">
@@ -98,6 +97,7 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
 					<td><%=stime %> ~ <%=etime %></td><%
 					for(int dayIdx = 0; dayIdx < days.length; dayIdx++)
 					{
+						if(schList.size() == 0) break;
 						SchedulerDTO sdto = schList.get(listIdx);
 						if(sdto.getSday().equals(days[dayIdx]) && sdto.getStime() == time)
 						{
