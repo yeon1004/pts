@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-package image;
-
-import DBConnection.*;
-
-public class ImageDAO {
-	DBConnect dbconnect = null;
-	String sql="";
-	
-	public ImageDAO() {
-		dbconnect = new DBConnect();
-	}
-}
-=======
 package image;
 
 import java.sql.*;
@@ -79,4 +65,3 @@ public class ImageDAO {
 		return filename;
 	}
 }
->>>>>>> branch 'master' of https://github.com/yeon1004/pts

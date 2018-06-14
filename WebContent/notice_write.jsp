@@ -118,9 +118,5 @@ else wpid = ((Integer)(session.getAttribute("wpid"))).intValue();
   <p>Footer Text</p>
 </footer>
 
-<!-- Bootstrap core JavaScript -->
-<script src="./js/bootstrap.min.js"></script>
-
-
 </body>
 </html>

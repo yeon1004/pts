@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
+
+<%
+request.setCharacterEncoding("UTF-8");
+%>    
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -25,20 +28,54 @@
 
 <script>
 		function wpcheck(){
-			var f = document.WpJoinForm;
-			if(!f.wpname.value){
+			var wf = document.WpJoinForm;
+			if(!wf.wpname.value){
 				alert("상호명을 입력하세요.");
 				return;
 			}
-			if(!f.wpnum1.value || !f.wpnum2.value || !f.wpnum2.value){
+			if(!wf.wpnum1.value || !wf.wpnum2.value || !wf.wpnum2.value){
 				alert("사업자번호를 입력하세요.");
 				return;
 			}
-			if(!f.wpimg.value){
+			if(!wf.wpimg.value){
 				alert("이미지를 등록해주세요.");
 				return;
 			}
-			f.submit();
+			if(wf.stime.value > wf.etime.value)
+			{
+				alert("마감시간이 오픈시간보다 빠릅니다.");
+				return;
+			}
+			wf.submit();
+		}
+		
+		function usercheck(){
+			var uf = document.UserJoinForm;
+			if(!uf.uid.value){
+				alert("아이디를 입력하세요.");
+				return;
+			}
+			if(!uf.upw.value){
+				alert("비밀번호를 입력하세요.");
+				return;
+			}
+			if(!uf.uname.value){
+				alert("이름을 입력하세요.");
+				return;
+			}
+			if(!uf.uphone.value){
+				alert("전화번호를 입력하세요.");
+				return;
+			}
+			if(!uf.uaddr.value){
+				alert("주소를 입력하세요.");
+				return;
+			}
+			if(!uf.wpid.value){
+				alert("근무지 번호를 입력하세요.");
+				return;
+			}
+			uf.submit();
 		}
 </script>
 
@@ -47,7 +84,7 @@
 <nav class="navbar navbar-inverse bg-ombra" id="navbar-custom">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#" style="color: #ffffff; font-size: 3rem">PTS</a>
+      <a class="navbar-brand" href="index.jsp" style="color: #ffffff; font-size: 3rem">PTS</a>
     </div>
   </div>
 </nav>
@@ -64,7 +101,7 @@ String ulevel = request.getParameter("level");
 	<!-- right contents -->
 	<h1>회원가입</h1>
 	<hr>
-	
+	<div class="col-sm-8 text-left">
 	<%
 	if(step == null || step.equals("") || step.equals("1"))
 	{
@@ -72,8 +109,8 @@ String ulevel = request.getParameter("level");
 		%>
 		<p> 환영합니다! <br>
 		가입 유형을 선택해주세요.</p>
-		<button type="button" class="btn btn-default" onclick="location.href('join.jsp?level=1&step=2');">관리자</button>
-		<button type="button" class="btn btn-default" onclick="location.href('join.jsp?level=2&step=2');">일반직원</button>
+		<button type="button" class="btn btn-default" onclick="location.href='join.jsp?level=1&step=2';">관리자</button>
+		<button type="button" class="btn btn-default" onclick="location.href='join.jsp?level=2&step=3';">일반직원</button>
 		<%
 	}
 	else if(step.equals("2") && ulevel.equals("1"))
@@ -81,38 +118,74 @@ String ulevel = request.getParameter("level");
 		//근무지 정보 입력
 		%>
 		<p>근무지 정보를 입력해주세요. </p>
-		<form name="WpJoinForm" action="/controller.jsp" method="post" enctype="multipart/form-data>
+		<form name="WpJoinForm" action="./controller.jsp?action=wpjoin" method="post" enctype="multipart/form-data" >
 			<div class="form-group">
 				<label for="wpname">상호명</label>
 				<input name="wpname" id="wpname" type="text" class="form-control">
 			</div>
 			<div class="form-group">
 				<label for="wpnum1">사업자번호</label>
-				<input name="wpnum1" id="wpnum1" type="number" maxlength="3" class="form-control">-
-				<input name="wpnum2" id="wpnum2" type="number" maxlength="2" class="form-control">-
-				<input name="wpnum3" id="wpnum3" type="number" maxlength="5" class="form-control">
+				<input name="wpnum1" id="wpnum1" type="text" maxlength="3" width="3rem" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>-
+				<input name="wpnum2" id="wpnum2" type="text" maxlength="2" width="2rem" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>-
+				<input name="wpnum3" id="wpnum3" type="text" maxlength="5" width="5rem" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
 			</div>
 			<div class="form-group">
 				<label for="wpimg">메인 이미지</label>
 				<input name="wpimg" id="wpimg" type="file" class="form-control">
 			</div>
+			<div class="form-group">
+				<label for="stime">오픈시간</label>
+				<select class="form-control" id="stime" name="stime">
+				<%
+				for(int i = 0; i <= 24 ; i++)
+				{
+					if(i==9)
+			    	{
+			    		%><option selected><%=i %></option><%
+			    	}
+			    	else{
+			    		%><option><%=i %></option><%
+			    	}
+				}
+				%>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="etime">마감시간</label>
+				<select class="form-control" id="etime" name="etime">
+				<%
+				for(int i = 0; i <= 24 ; i++)
+				{
+					if(i==18)
+			    	{
+			    		%><option selected><%=i %></option><%
+			    	}
+			    	else{
+			    		%><option><%=i %></option><%
+			    	}
+				}
+				%>
+				</select>
+			</div>
 			<input type="hidden" name="action" value="wpjoin"/>
-			<button type="button" class="btn btn-default" onclick="wpcheck();">확인</button>
+			<button type="button" class="btn btn-info" onclick="wpcheck();">확인</button>
+			<button type="button" class="btn btn-default" onclick="history.go(-1)">취소</button><br><br>
+			<a href="join.jsp?level=1&step=3">이미 등록된 근무지가 있습니다.</a>
 		</form>
 		<%
 	}
-	else if(step.equals("2"))
+	else if(step.equals("3"))
 	{
-		if(ulevel.equals("1"))
-			ulevel = "관리자";
-		else
-			ulevel = "직원";
+		if(ulevel.equals("1")) ulevel = "관리자";
+		else ulevel = "직원";
+		
 		//유저 정보 입력
 		%>
-		<form name="UserJoinForm" action="/controller.jsp" method="post">
+		<form name="UserJoinForm" action="./controller.jsp?action=userjoin" method="post">
 			<div class="form-group">
 				<label for="ulevel">가입 유형</label>
-				<input name="ulevel" id="ulevel" type="text" class="form-control" value="<%=ulevel%>" disabled>
+				<input id="ulevel" type="text" class="form-control" value="<%=ulevel%>" disabled>
+				<input type="hidden" name="ulevel" value="<%=ulevel%>"/>
 			</div>
 			<div class="form-group">
 				<label for="uid">아이디</label>
@@ -123,8 +196,8 @@ String ulevel = request.getParameter("level");
 				<input name="upw" id="upw" type="password" class="form-control">
 			</div>
 			<div class="form-group">
-				<label for="ubirth">생년월일</label>
-				<input name="ubirth" id="ubirth" type="date" class="form-control">
+				<label for="uname">이름</label>
+				<input name="uname" id="uname" type="text" class="form-control">
 			</div>
 			<div class="form-group">
 				<label for="uphone">전화번호</label>
@@ -135,15 +208,16 @@ String ulevel = request.getParameter("level");
 				<input name="uaddr" id="uaddr" type="text" class="form-control">
 			</div>
 			<div class="form-group">
-				<label for="wpid">근무지 id</label>
-				<input name="wpid" id="wpid" type="number" class="form-control">
+				<label for="wpid">근무지 번호</label>
+				<input name="wpid" id="wpid" type="text" class="form-control">
 			</div>
-			<input type="hidden" name="action" value="userjoin"/>
-			<button type="submit" class="btn btn-default">Submit</button>
+			<button type="button" class="btn btn-info" onclick="usercheck();">가입하기</button>
+			<button type="button" class="btn btn-default" onclick="history.go(-1)">취소</button>
 		</form>
 		<%
 	}
 	%>
+	</div>
 	</div>
 </div>
 </div>

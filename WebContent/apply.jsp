@@ -1,7 +1,6 @@
 <%@ page language = "java" contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
 <%@ page import="java.sql.*,java.text.SimpleDateFormat,java.util.Date" %>
 <%@ page import="java.util.*" %>
-
 <%@ page import="scheduler.*" %>
 <jsp:useBean id="SchedulerDAO" class="scheduler.SchedulerDAO"/>
 <%@ page import="users.*" %>
@@ -68,7 +67,6 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 			</span>
 			<h3><%=wpname %></h3><br>
 			<p>근무지 코드 : <%=wpid %></p>
-			
 			<hr style="border: 1px solid rgb(232, 213, 41)"><br>
 			<p><a class="nav-item " href="./timetable.jsp">근무 시간표</a></p>
 			<p><a class="nav-item " href="./notice.jsp">공지사항</a></p>
@@ -77,8 +75,9 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 		</div>
 		<div class="col-sm-10 text-left" style="height: 100%; min-height: 100rem;">
 	    	<!-- 컨텐츠 -->
-			<h1>근무시간표</h1>
+			<h1>근무 신청</h1>
 			<hr>
+			<input type="week" name="week"/>
 			<table class="timetable text-center col-sm-10">
 				<tr><th class="time">time</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th><th>일</th></tr>
 				<%
@@ -156,6 +155,7 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 				}
 				%>
 			</table>
+			
 		</div>
 	</div>
 </div>
