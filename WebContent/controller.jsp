@@ -18,7 +18,9 @@
 
 <%
 request.setCharacterEncoding("UTF-8");
+
 String action = request.getParameter("action");
+
 if(action == "login" || action.equals("login"))
 {
 	String uid = request.getParameter("uid");
@@ -63,6 +65,7 @@ else if(action.equals("wpjoin"))
 	String uploadPath = request.getRealPath("./img");
 	out.print("realPath : "+uploadPath);
 	int size = 10 * 1024 * 1024;
+
 	WorkplaceDTO wdto = new WorkplaceDTO();
 	
 	String file="", filename="", originFile="";
@@ -197,6 +200,5 @@ else if(action.equals("write"))
 		}
 		
 }
-
 
 %>
