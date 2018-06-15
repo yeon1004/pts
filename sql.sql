@@ -49,7 +49,7 @@ create table pay(
     total int not null default 0,
     pstatus bool default false,
     primary key(pid),
-    foreign key(uid) references users(uid)
+    foreign key(uid) references users(uid) 
  );
  
  create table notice(
@@ -60,7 +60,7 @@ create table pay(
     ndate datetime default current_timestamp,
     nhit int default 0,
     primary key(nid),
-    foreign key(uid) references users(uid)
+    foreign key(uid) references users(uid) on delete cascade on update cascade
  );
  
  create table reply(

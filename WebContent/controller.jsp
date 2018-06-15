@@ -10,7 +10,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 
-<jsp:useBean id="NoticeDAO" class="notice.NoticeDAO" scope="page"/>
+<jsp:useBean id="NoticeDAO" class="notice.NoticeDAO"/>
 <jsp:useBean id="ImageDAO" class="image.ImageDAO" scope="page"/>
 <jsp:useBean id="SchedulerDAO" class="scheduler.SchedulerDAO" scope="page"/>
 <jsp:useBean id="UsersDAO" class="users.UsersDAO" scope="page"/>
@@ -174,6 +174,7 @@ else if(action.equals("newsche"))
 	response.sendRedirect("./newtimetable.jsp");
 }
 
+
 //리스트
 else if(action.equals("list"))
 {
@@ -183,14 +184,14 @@ else if(action.equals("list"))
 //글쓰기
 else if(action.equals("write"))
 {
-		String writer="";
-		String title="";
-		String cont="";
+		String writer=request.getParameter("nitle");
+		String title=request.getParameter("cont");
+		String cont=request.getParameter("uid");
 		
 		NoticeDTO bdto = new NoticeDTO();
 		bdto.setNtitle(title);
-		bdto.setUid(writer);
 		bdto.setNcont(cont);
+		bdto.setUid(writer);
 		
 		if(NoticeDAO.insertWrite(bdto)) {
 			out.println("<script>alert('등록되었습니다!'); location.href='controller.jsp?action=list';</script>");

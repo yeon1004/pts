@@ -81,7 +81,7 @@ public class NoticeDAO {
 		int max = 0;
 		
 		try {
-			sql = "SELECT MAX(NUM) FROM board";
+			sql = "SELECT MAX(NUM) FROM notice";
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			
@@ -103,14 +103,14 @@ public class NoticeDAO {
 		PreparedStatement pstmt = null;
 		
 		try {
-			sql = "INSERT INTO notice(nid, ntitle, uid, ncont) values(?, ?, ?, ?)";
+			sql = "INSERT INTO notice(nid,ntitle, uid, ncont) values (?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			
 			pstmt.setString(1, dto.getNtitle());
 			pstmt.setString(2, dto.getUid());
 			pstmt.setString(3, dto.getNcont());
 			pstmt.execute();
-			
+		
 		}catch(Exception e) {
 			e.printStackTrace();
 			return false;

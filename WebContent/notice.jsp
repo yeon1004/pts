@@ -121,6 +121,7 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 						<th style="background-color:#eeeeee; text-align:center;">제목</th>
 							<th style="background-color:#eeeeee; text-align:center;">작성자</th>
 								<th style="background-color:#eeeeee; text-align:center;">작성일</th>
+								<th style="background-color:#eeeeee; text-align:center;">조회</th>
 					</tr> 
 				
 			<%
