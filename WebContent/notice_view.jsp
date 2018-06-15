@@ -1,17 +1,19 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*,java.text.SimpleDateFormat,java.util.Date"%>
+<%@ page language = "java" contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
+<%@ page import="java.sql.*,java.text.SimpleDateFormat,java.util.Date" %>
 <%@ page import="java.util.*" %>
-<%@ page import="notice.*" %>
-<jsp:useBean id="dao" class="notice.NoticeDAO"/>
-<jsp:useBean id="dto" class="notice.NoticeDTO"/>
+<%@ page import="scheduler.*" %>
+
 <jsp:useBean id="SchedulerDAO" class="scheduler.SchedulerDAO"/>
 <%@ page import="users.*" %>
 <jsp:useBean id="UsersDAO" class="users.UsersDAO"/>
 <%@ page import="image.*" %>
 <jsp:useBean id="ImageDAO" class="image.ImageDAO"/>
-<%@ page import="scheduler.*" %>
+<%@ page import="notice.*" %>
+<jsp:useBean id="dao" class="notice.NoticeDAO"/>
 
+<%
+request.setCharacterEncoding("UTF-8");
+%>  
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
@@ -21,6 +23,12 @@ String wpid = (String)session.getAttribute("wpid");
 if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) response.sendRedirect("./login.jsp");
 %>
 
+<%
+	int idx = Integer.parseInt(request.getParameter("idx"));
+	int pg = Integer.parseInt(request.getParameter("pg"));
+	NoticeDTO dto = dao.getNoticeView(idx);	
+	dao.UpdateHit(idx);
+%>
 
 <html>
 <head>
@@ -81,12 +89,12 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 		<div class="col-sm-10 text-left">
 	    	<!-- 컨텐츠 -->
 	    	
-		<div><a href='notice.jsp'><h1>공지사항</h1></a></div>
+		<div><h1>공지사항</h1></a></div>
 	<div class='cont'>
 		<table id="tbView">
 		<tr id="btitle">
-			<td width="5%"><%=dto.getNid()%><!--글번호--></td>
-			<th width="auto" style="text-align: left; font-size: 20px; font-style: bolder;"><%=dto.getNtitle()%><!--제목--></th>
+			<td width="5%"><%=idx%><!--글번호--></td>
+			<th width="auto" style="text-align: center; font-size: 20px; font-style: bolder;"><%=dto.getNtitle()%><!--제목--></th>
 			<td style="width: 8em;" align="right"><font style="color:gray;">조회수 : </font><%=dto.getNhit()%><!--조회수--></td>
 		</tr>
 		<tr id="binfo">
@@ -102,7 +110,8 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 		</tr>
 	
 		</table>
-		<input type="button" id="btnMyItem" value="목록" onClick="location.href='controller.jsp?action=list';"/>
+		<input type="button" id="btnMyItem"  value="목록" onClick="location.href='controller.jsp?action=list';"/>
+	
 	</div>
 </div>
 </div>

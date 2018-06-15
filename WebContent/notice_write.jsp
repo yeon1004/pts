@@ -45,11 +45,11 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 	tinymce.init({ selector:'textarea' });
 	function check(){
 		var f = document.writeForm;
-		if(!f.title.value){
+		if(!f.ntitle.value){
 			alert("제목을 입력하세요.");
 			return;
 		}
-		if(!f.cont.value){
+		if(!f.ncont.value){
 			alert("내용을 입력하세요.");
 			return;
 		}
@@ -97,25 +97,20 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 	    	<!-- 컨텐츠 -->
 			<div><a href='notice.jsp'><h1>공지사항</h1></a></div>
 	<div class='cont'>
-		<form name="writeForm" action="controller.jsp?action=write" method="post" enctype="multipart/form-data">
-		<table id="tbWrite" class="table talbe-striped" style="text-align: center; border: 1px solid #dddddd">
-			
-				<tr>
-					<th colspan="2" style="text-align: center;">글 작성하기</th>
-				</tr>
-				 
+		<form name="writeForm" action="controller.jsp?action=write" method="post">
+			<table id="tbWrite" class="table talbe-striped" style="text-align: center; border: 1px solid #dddddd">
 					<tr>
-						<td><input type="text" class="form-control" placeholder="글 제목" name="title" maxlength="50"></td>
+						<th colspan="2" style="text-align: center;">글 작성하기</th>
+					</tr>
+					<tr>
+						<td><input type="text" class="form-control" placeholder="글 제목" name="ntitle" maxlength="50"></td>
 					</tr>	
-						<tr>
-						<td><textarea class="form-control" placeholder="글 내용" name="cont" maxlength="2048" style="height:350px; "></textarea></td>
-						</tr>
-			
-					
-				</table> 
+					<tr>
+						<td><textarea class="form-control" placeholder="글 내용" name="ncont" maxlength="2048" style="height:350px; "></textarea></td>
+					</tr>
+			</table> 
 		<button type="button" onclick="check();" style="width: 200px; height: 60px; background-color: #e8d529; color: #000000; font-size: 15px; border: 0;">등록</button>
 		<button type="reset" style="width: 200px; height: 60px; background-color: #2C3250; color: white; font-size: 15px; border: 0;">취소</button>
-		<input type="hidden" name="writer" value="<%=uid%>"/>
 		</form>
 	</div>
 </div>

@@ -1,6 +1,8 @@
+
 package notice;
 
 import DBConnection.*;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,15 +47,15 @@ public class NoticeDAO {
 		return data;
 	}
 	
-	public ArrayList<NoticeDTO> getBoardMemberList() {
+	public ArrayList<NoticeDTO> getNoticeMemberList() {
 		Connection con = dbconnect.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		ArrayList<NoticeDTO> boardList = new ArrayList<NoticeDTO>();
+		ArrayList<NoticeDTO> noticeList = new ArrayList<NoticeDTO>();
 		
 		try {
-			sql = "SELECT nid, ntitle, uid, ndate, nhit FROM notice ORDER BY bid DESC";
+			sql = "SELECT nid, ntitle, uid, ndate, nhit FROM notice ORDER BY nid DESC";
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			
@@ -64,14 +66,14 @@ public class NoticeDAO {
 				dto.setUid(rs.getString(3));
 				dto.setNdate(rs.getString(4).substring(0,10));
 				dto.setNhit(rs.getInt(5));
-				boardList.add(dto);
+				noticeList.add(dto);
 			}
 		}catch(Exception e) {
 			
 		}finally {
 			DBClose.close(con,pstmt,rs);
 		}
-		return boardList;
+		return noticeList;
 	}
 	
 	public int getMax() {
@@ -103,12 +105,12 @@ public class NoticeDAO {
 		PreparedStatement pstmt = null;
 		
 		try {
-			sql = "INSERT INTO notice(nid,ntitle, uid, ncont) values (?, ?, ?, ?)";
+			sql = "INSERT INTO notice(ntitle, ncont, uid) values (?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			
 			pstmt.setString(1, dto.getNtitle());
-			pstmt.setString(2, dto.getUid());
-			pstmt.setString(3, dto.getNcont());
+			pstmt.setString(2, dto.getNcont());
+			pstmt.setString(3, dto.getUid());
 			pstmt.execute();
 		
 		}catch(Exception e) {
@@ -120,7 +122,7 @@ public class NoticeDAO {
 		return true;
 	}
 	
-	public NoticeDTO getBoardView(int idx) {
+	public NoticeDTO getNoticeView(int idx) {
 		Connection con = dbconnect.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -166,5 +168,7 @@ public class NoticeDAO {
 			DBClose.close(con,pstmt);
 		}
 	}
+	
+	
 	
 }

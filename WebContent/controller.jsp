@@ -18,9 +18,7 @@
 
 <%
 request.setCharacterEncoding("UTF-8");
-
 String action = request.getParameter("action");
-
 if(action == "login" || action.equals("login"))
 {
 	String uid = request.getParameter("uid");
@@ -65,7 +63,6 @@ else if(action.equals("wpjoin"))
 	String uploadPath = request.getRealPath("./img");
 	out.print("realPath : "+uploadPath);
 	int size = 10 * 1024 * 1024;
-
 	WorkplaceDTO wdto = new WorkplaceDTO();
 	
 	String file="", filename="", originFile="";
@@ -173,32 +170,33 @@ else if(action.equals("newsche"))
 	
 	response.sendRedirect("./newtimetable.jsp");
 }
-
-
 //리스트
 else if(action.equals("list"))
 {
-	pageContext.forward("notice.jsp");
+	response.sendRedirect("notice.jsp");
 }
-
 //글쓰기
 else if(action.equals("write"))
 {
-		String writer=request.getParameter("nitle");
-		String title=request.getParameter("cont");
-		String cont=request.getParameter("uid");
+		String writer = (String)session.getAttribute("uid");
+		String ntitle = request.getParameter("ntitle");
+		String ncont = request.getParameter("ncont");
 		
-		NoticeDTO bdto = new NoticeDTO();
-		bdto.setNtitle(title);
-		bdto.setNcont(cont);
-		bdto.setUid(writer);
+		out.println(writer+"<br>"+ntitle+"<br>"+ncont);
 		
-		if(NoticeDAO.insertWrite(bdto)) {
+		NoticeDTO ndto = new NoticeDTO();
+		ndto.setNtitle(ntitle);
+		ndto.setNcont(ncont);
+		ndto.setUid(writer);
+		
+		if(NoticeDAO.insertWrite(ndto)) {
 			out.println("<script>alert('등록되었습니다!'); location.href='controller.jsp?action=list';</script>");
 		}
 		else {
-			throw new Exception("디비 등록 중 문제 발생");
+			out.println("<script>alert('등록 실패');</script>");
 		}
+		
 }
+
 
 %>
