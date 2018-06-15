@@ -192,24 +192,18 @@ footer {
 	border: 1px solid #dddddd;
 }
 
-#tbWrite{
-	width: 90%;
-	margin-left: 5%;
-	box-sizing: border-box;
+#tbNotice{
+	
+}
+
+#tbNotice th, td{
+	text-align: center;
 	border: 1px solid #dddddd;
 }
 
-#tbWrite td{
-	box-sizing: border-box;
-	padding: 20px;
-	border: 1px solid #dddddd;
-}
-
-#tbWrite th{
-	box-sizing: border-box;
-	padding: 20px;
+#tbNotice th{
+	text-align: center;
 	font-style: bold;
-	border: 1px solid #dddddd;
 }
 
 #tbWrite textarea{
@@ -326,3 +320,4 @@ footer {
 	color: #FFFFFF;
 	border: 0;
 }
+

@@ -2,13 +2,14 @@
 <%@ page import="java.sql.*,java.text.SimpleDateFormat,java.util.Date" %>
 <%@ page import="java.util.*" %>
 <%@ page import="scheduler.*" %>
-<%@ page import="notice.*" %>
+
 <jsp:useBean id="SchedulerDAO" class="scheduler.SchedulerDAO"/>
 <%@ page import="users.*" %>
 <jsp:useBean id="UsersDAO" class="users.UsersDAO"/>
 <%@ page import="image.*" %>
 <jsp:useBean id="ImageDAO" class="image.ImageDAO"/>
-<jsp:useBean id="dao" class="notice.NoticeDAO"/>
+<%@ page import="notice.*" %>
+<jsp:useBean id="NoticeDAO" class="notice.NoticeDAO"/>
 <%
 request.setCharacterEncoding("UTF-8");
 %>   
@@ -21,9 +22,9 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 %>
 
 <%	
-	int total = dao.count();
-	ArrayList<NoticeDTO> boardList = dao.getBoardMemberList();
-	int size = boardList.size();
+	int total = NoticeDAO.count();
+	ArrayList<NoticeDTO> noticeList = NoticeDAO.getNoticeMemberList();
+	int size = noticeList.size();
 	int size2 = size;
 	
 	final int ROWSIZE = 10;
@@ -110,20 +111,19 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 			<p><a class="nav-item " href="./pay.jsp">급여 관리</a></p>
 		</div>
 		<div class="col-sm-10 text-left" style="height: 100%; min-height: 100rem;">
-	    	<!-- 컨텐츠 -->
-			<div><a href='notice.jsp'><h1>공지사항</h1></a></div>
-	<div class='cont'>
-		<br><br>
-		<table id=tbWrite class="table table-striped" style="text-align:center; border: 1px solid #dddddd">
-		
-				<tr>
-					<th style="background-color:#eeeeee; text-align:center;">번호</th>
-						<th style="background-color:#eeeeee; text-align:center;">제목</th>
-							<th style="background-color:#eeeeee; text-align:center;">작성자</th>
-								<th style="background-color:#eeeeee; text-align:center;">작성일</th>
-								<th style="background-color:#eeeeee; text-align:center;">조회</th>
-					</tr> 
-				
+	    <!-- 컨텐츠 -->
+		<h1>공지사항</h1>
+		<hr>
+		<br>
+		<div class="panel panel-default" style="padding: 3rem 2rem;">
+		<table id="tbNotice" class="table table-striped text-center">
+			<tr>
+				<th style="width: 10%">번호</th>
+				<th style="width: 45%">제목</th>
+				<th style="width: 20%">작성자</th>
+				<th style="width: 15%">작성일</th>
+				<th style="width: 15%">조회</th>
+			</tr> 
 			<%
 			if(total==0) {
 				%>
@@ -133,26 +133,25 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 				<%
 			} else {
 				for(int i=ROWSIZE*(pg-1); i<end; i++){
-					NoticeDTO dto = boardList.get(i);
+					NoticeDTO dto = noticeList.get(i);
 					int idx = dto.getNid();
 			%>
-					<tr class="blist" align="center">
-						<td align="center"><%=idx%></td>
-						<td align="left">&nbsp;&nbsp;&nbsp;
-							<a href="notice_view.jsp?idx=<%=idx%>&pg=<%=pg%>"><%=dto.getNtitle()%></a>
+					<tr class="blist" >
+						<td><%=idx%></td>
+						<td style="text-align: left;">
+							&nbsp;&nbsp;&nbsp;&nbsp;<a href="notice_view.jsp?idx=<%=idx%>&pg=<%=pg%>"><%=dto.getNtitle()%></a>
 						</td>
-						<td align="center"><%=dto.getUid()%></td>
-						<td align="center"><%=dto.getNdate()%></td>
-						<td align="center"><%=dto.getNhit()%></td>
+						<td><%=dto.getUid()%></td>
+						<td><%=dto.getNdate()%></td>
+						<td><%=dto.getNhit()%></td>
 					</tr><%
 				}
 			} 
 			%>
 		</table>
-		
-		<table id="tbButton" style="cellpadding:0; cellspacing:0; border:0">
-			<tr>
-				<td align="center" colspan="5">
+		</div>
+		<div class="panel panel-default text-center">
+			<div class="panel-heading">
 					<%
 						if(pg>BLOCK) {
 					%>
@@ -183,14 +182,14 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 						[<a href="notice.jsp?pg=<%=allPage%>">▶▶</a>]
 					<%}
 					%>
-				</td>
-			</tr>
-			
-			<tr align="right">
-				<td colspan="5"><button type="button" onclick="window.location='notice_write.jsp'" style="width: 100px; height: 30px; background-color: #2C3250; color: #FFFFFF; margin-right: 5%; border: 0;">글쓰기</button></td>
-			</tr>
-		</table>
+			</div>
+			<div class="panel-body">
+				<button type="button" class="btn btn-info bg-ombra" onclick="window.location='notice_write.jsp'" style="border: 0;">
+					글쓰기
+				</button>
+			</div>
 		</div>
+		
 	</div>
 </div>
 </div>
