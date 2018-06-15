@@ -103,7 +103,7 @@ public class NoticeDAO {
 		PreparedStatement pstmt = null;
 		
 		try {
-			sql = "INSERT INTO notice(nid,ntitle, uid, ncont) values (?, ?, ?)";
+			sql = "INSERT INTO notice(nid,ntitle, uid, ncont) values (?, ?, ?, ?)";
 			pstmt = con.prepareStatement(sql);
 			
 			pstmt.setString(1, dto.getNtitle());
