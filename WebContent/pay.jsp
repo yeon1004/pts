@@ -18,6 +18,7 @@ String uid = (String)session.getAttribute("uid");
 String wpname = (String)session.getAttribute("wpname");
 String wpid = (String)session.getAttribute("wpid");
 if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) response.sendRedirect("./login.jsp");
+if(!UsersDAO.IsManager(uid)) out.println("<script>alert('권한이 없습니다!'); history.go(-1)</script>");
 
 //검색
 String search_name = request.getParameter("s_name");
