@@ -1,9 +1,8 @@
 package scheduler;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.sql.*;
+import java.util.*;
+import java.util.Date;
 
 import DBConnection.*;
 
@@ -52,7 +51,7 @@ public class SchedulerDAO {
 		ResultSet rs = null;
 		
 		try {
-			sql = "select aid from apply where sid=? and astatus='½ÂÀÎ'";
+			sql = "select aid from apply where sid=? and astatus='Â½Ã‚Ã€ÃŽ'";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, sid);
 			rs = pstmt.executeQuery();
@@ -66,30 +65,6 @@ public class SchedulerDAO {
 			DBClose.close(con,pstmt,rs);
 		}
 		return -1;
-	}
-	
-	public String getApplyUserName(String sid)
-	{
-		Connection con = dbconnect.getConnection();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		int id = Integer.parseInt(sid);
-		try {
-			sql = "select users.uname from scheduler, apply, users where scheduler.sid=? and scheduler.sid = apply.sid and apply.uid=users.uid";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, id);
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				return rs.getString(1);
-			}
-		}catch(Exception e) {
-			
-		}finally {
-			DBClose.close(con,pstmt,rs);
-		}
-		return "";
 	}
 	
 	public void InsertNewSchedule(SchedulerDTO sdto)
@@ -114,5 +89,28 @@ public class SchedulerDAO {
 		}finally {
 			DBClose.close(con,pstmt);
 		}
+	}
+	
+	public Date GetFirstDayOfWeek(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(2018, date.getMonth(), date.getDate());
+		int day = date.getDay();
+		cal.add(Calendar.DATE, day*-1);
+		return cal.getTime();
+	}
+	
+	public Date GetLastDayOfWeek(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(2018, date.getMonth(), date.getDate());
+		int day = date.getDay();
+		cal.add(Calendar.DATE, 6-day);
+		return cal.getTime();
+	}
+	
+	public Date GetDayAfter(Date date, int num) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(2018, date.getMonth(), date.getDate());
+		cal.add(Calendar.DATE, num);
+		return cal.getTime();
 	}
 }

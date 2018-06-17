@@ -47,7 +47,7 @@ body{
 }
 
 .bg-gray{
-	background-color: #cccccc !important;
+	background-color: #eeeeee !important;
 }
 
 p a:link, a:visited, a:hover{
@@ -90,23 +90,32 @@ footer {
 }
 
 .timetable{
-	border-collapse : collapse;
 	text-align: center;
 	height:auto;
-	margin: 2rem;
-}
-
-.timetable th, td{
-	border: 1px solid gray;
-	width: 10rem;
-	height: 3rem;
-	text-align: center;
 }
 
 .timetable .time{
-	width: 10rem;
+	width: 8%;
 }
 
+.timetable th{
+	color: rgb(83, 96, 122);
+	font-size: 1.7rem;
+	width: 11.5%;
+	height: 3rem;
+	text-align: center;
+	vertical-align: middle;
+	border: 1px solid gray;
+	background-color: #eeeeee;
+}
+
+.timetable td{
+	width: 11.5%;
+	height: 3rem;
+	text-align: center;
+	vertical-align: middle;
+	border: 1px solid gray;
+}
 
 .cont{
 	width: 100%;

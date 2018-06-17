@@ -1,13 +1,14 @@
 <%@ page language = "java" contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
 <%@ page import="java.sql.*,java.text.SimpleDateFormat,java.util.Date" %>
 <%@ page import="java.util.*" %>
-
 <%@ page import="scheduler.*" %>
 <jsp:useBean id="SchedulerDAO" class="scheduler.SchedulerDAO"/>
 <%@ page import="users.*" %>
 <jsp:useBean id="UsersDAO" class="users.UsersDAO"/>
 <%@ page import="image.*" %>
 <jsp:useBean id="ImageDAO" class="image.ImageDAO"/>
+<%@ page import="apply.*" %>
+<jsp:useBean id="ApplyDAO" class="apply.ApplyDAO"/>
 <%
 request.setCharacterEncoding("UTF-8");
 %>   
@@ -67,24 +68,94 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 				<img class="img-circle" src="<%=filePath %>" style="width:70%;">
 			</span>
 			<h3><%=wpname %></h3><br>
-			<p>근무지 코드 : <%=wpid %></p>
-			
+			<p>근무지 코드 [ <%=wpid %> ]</p>
 			<hr style="border: 1px solid rgb(232, 213, 41)"><br>
 			<p><a class="nav-item " href="./timetable.jsp">근무 시간표</a></p>
 			<p><a class="nav-item " href="./notice.jsp">공지사항</a></p>
 			<p><a class="nav-item " href="./apply.jsp">근무 신청</a></p>
+			<p><a class="nav-item " href="./apply_list.jsp">신청 목록</a></p>
 			<p><a class="nav-item " href="./pay.jsp">급여 관리</a></p>
 		</div>
 		<div class="col-sm-10 text-left" style="height: 100%; min-height: 100rem;">
 	    	<!-- 컨텐츠 -->
-			<h1>근무시간표</h1>
+			<h1>근무 시간표</h1>
 			<hr>
-			<table class="timetable text-center col-sm-10">
-				<tr><th class="time">time</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th><th>일</th></tr>
+			<div class="panel panel-default">
+			<div class="panel-heading text-center" style="padding: 2rem;">
+			<%
+				String dir = request.getParameter("dir");
+				String s_num = request.getParameter("num");
+				int i_num = 0;
+				
+				String f_link = "", b_link = "";
+				
+				Date date = new Date();
+				date.setYear(2018);
+				date = SchedulerDAO.GetDayAfter(date, 0);
+				if(dir==null || dir.equals("") || dir == "")
+				{
+					f_link = "timetable.jsp?dir=f&num=1";
+					b_link = "timetable.jsp?dir=b&num=1";
+				}
+				else
+				{
+					i_num = Integer.parseInt(s_num);
+					if(dir.equals("f"))
+					{
+						f_link = "timetable.jsp?dir=f&num=" + (i_num + 1);
+						if(i_num > 1)
+							b_link = "timetable.jsp?dir=f&num=" + (i_num -1);
+						else b_link = "timetable.jsp";
+						
+						date = SchedulerDAO.GetDayAfter(date, i_num * 7);
+					}
+					else // dir.equals.("b")
+					{
+						b_link = "timetable.jsp?dir=b&num=" + (i_num + 1);
+						if(i_num > 1)
+							f_link = "timetable.jsp?dir=b&num=" + (i_num -1);
+						else f_link = "timetable.jsp";
+						
+						date = SchedulerDAO.GetDayAfter(date, i_num * -7);
+					}
+				}
+				
+				Date sdate = SchedulerDAO.GetFirstDayOfWeek(date);
+				Date edate = SchedulerDAO.GetLastDayOfWeek(date);
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				String s_sdate = sdf.format(sdate);
+				String s_edate = sdf.format(edate);
+			%>
+			<form name="selectWeekForm" class="form-inline">
+				<button type="button" class="btn btn-default" onclick="location.href='<%=b_link%>';">◀</button>
+				<div class="form-group">
+					<label class="control-label" for="sdate"></label>
+		      		<input type="text" class="form-control text-center" id="sdate" name="sdate" value="<%= s_sdate%>" disabled style="background-color: white;">
+				</div>
+				<div class="form-group">
+					<label class="control-label" for="edate">~</label>
+		      		<input type="text" class="form-control text-center" id="edate" name="edate" value="<%= s_edate%>" disabled style="background-color: white;">
+				</div>
+				<button type="button" class="btn btn-default" onclick="location.href='<%=f_link%>';">▶</button>
+			</form>
+			
+			</div>
+			<div class="panel-body text-center" style="padding-left: 5rem; padding-right: 5rem;">
+			<table class="table timetable text-center " style="margin: 0;">
+				<tr>
+					<th class="time" style="border-top:1px solid gray;">time</th>
+					<th style="border-top:1px solid gray;">일</th>
+					<th style="border-top:1px solid gray;">월</th>
+					<th style="border-top:1px solid gray;">화</th>
+					<th style="border-top:1px solid gray;">수</th>
+					<th style="border-top:1px solid gray;">목</th>
+					<th style="border-top:1px solid gray;">금</th>
+					<th style="border-top:1px solid gray;">토</th>
+				</tr>
 				<%
 				ArrayList<SchedulerDTO> schList = SchedulerDAO.getMemberList(wpid);
 				
-				String[] days = {"월","화","수","목","금","토","일"};
+				String[] days = {"일","월","화","수","목","금","토"};
 				int[] dayCnts = { 0, 0, 0, 0, 0, 0, 0};
 				int listIdx = 0;
 				double openTime = 9.0f;
@@ -135,17 +206,34 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 								if(sdto.getSday().equals(days[dayIdx]) && sdto.getStime() == time)
 								{
 									double diff = (schList.get(listIdx).getEtime() - schList.get(listIdx).getStime()) * 2;
-									String applyUserName = SchedulerDAO.getApplyUserName(sdto.getSid());
 									if(listIdx < schList.size() - 1) listIdx++;
 									dayCnts[dayIdx] = (int)diff;
-									%><td rowspan="<%=(int)diff%>"><%=applyUserName %></td><%
+									
+									String apply_uid = ApplyDAO.getApplyUserId(sdto.getSid(), s_sdate, s_edate);
+									String adate = sdf.format(SchedulerDAO.GetDayAfter(sdate, dayIdx));
+									String astatus = ApplyDAO.getApplyStatus(uid, sdto.getSid());
+									
+									if(apply_uid == null || apply_uid.equals(""))
+									{%>
+										<td rowspan="<%=(int)diff%>" class="bg-snow" style="vertical-align: middle;">
+											
+										</td>
+									<%}
+									else
+									{
+										%>
+										<td rowspan="<%=(int)diff%>" class="bg-snow" style="vertical-align: middle;">
+											<%=UsersDAO.getUserName(apply_uid) %>
+										</td>
+										<%
+									}
 								}
 								else if(dayCnts[dayIdx] > 1)
 								{
 									dayCnts[dayIdx]--;
 								}
 								else{
-									%><td class="bg-coldbreeze"></td><%
+									%><td></td><%
 								}
 							}
 						}
@@ -156,6 +244,7 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 				}
 				%>
 			</table>
+			</div>
 		</div>
 	</div>
 </div>

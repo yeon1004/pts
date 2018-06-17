@@ -74,10 +74,12 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 				<img class="img-circle" src="<%=filePath %>" style="width:70%;">
 			</span>
 			<h3><%=wpname %></h3><br>
-			<p>근무지 코드 : <%=wpid %></p>
+			<p>근무지 코드 [ <%=wpid %> ]</p>
+			<hr style="border: 1px solid rgb(232, 213, 41)"><br>
 			<p><a class="nav-item " href="./timetable.jsp">근무 시간표</a></p>
 			<p><a class="nav-item " href="./notice.jsp">공지사항</a></p>
 			<p><a class="nav-item " href="./apply.jsp">근무 신청</a></p>
+			<p><a class="nav-item " href="./apply_list.jsp">신청 목록</a></p>
 			<p><a class="nav-item " href="./pay.jsp">급여 관리</a></p>
 		</div>
 		<div class="col-sm-10 text-left" style="height: 100%; min-height: 100rem;">
@@ -141,7 +143,7 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 				<input type="hidden" name="wpid" value="<%=wpid%>"/>
 				<button type="submit" class="btn btn-info">추가</button>
 				<button type="button" class="btn btm-default" onclick="finish();">완료</button>
-			</form>
+			</form><br>
 			
 			<table class="timetable text-center col-sm-10">
 				<tr><th class="time">time</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th><th>일</th></tr>
@@ -187,7 +189,6 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 								if(sdto.getSday().equals(days[dayIdx]) && sdto.getStime() == time)
 								{
 									double diff = (schList.get(listIdx).getEtime() - schList.get(listIdx).getStime()) * 2;
-									String applyUserName = ScheduleDAO.getApplyUserName(sdto.getSid());
 									if(listIdx < schList.size() - 1) listIdx++;
 									dayCnts[dayIdx] = (int)diff;
 									%><td rowspan="<%=(int)diff%>"></td><%

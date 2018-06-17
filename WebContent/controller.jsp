@@ -6,6 +6,7 @@
 <%@ page import="users.*" %>
 <%@ page import="workplace.*" %>
 <%@ page import="notice.*" %>
+<%@ page import="apply.*" %>
 
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
@@ -15,12 +16,10 @@
 <jsp:useBean id="SchedulerDAO" class="scheduler.SchedulerDAO" scope="page"/>
 <jsp:useBean id="UsersDAO" class="users.UsersDAO" scope="page"/>
 <jsp:useBean id="WorkplaceDAO" class="workplace.WorkplaceDAO" scope="page"/>
-
+<jsp:useBean id="ApplyDAO" class="apply.ApplyDAO" scope="page"/>
 <%
 request.setCharacterEncoding("UTF-8");
-
 String action = request.getParameter("action");
-
 if(action == "login" || action.equals("login"))
 {
 	String uid = request.getParameter("uid");
@@ -65,7 +64,6 @@ else if(action.equals("wpjoin"))
 	String uploadPath = request.getRealPath("./img");
 	out.print("realPath : "+uploadPath);
 	int size = 10 * 1024 * 1024;
-
 	WorkplaceDTO wdto = new WorkplaceDTO();
 	
 	String file="", filename="", originFile="";
@@ -185,7 +183,7 @@ else if(action.equals("write"))
 		String ntitle = request.getParameter("ntitle");
 		String ncont = request.getParameter("ncont");
 		
-		out.println(writer+"<br>"+ntitle+"<br>"+ncont);
+		//out.println(writer+"<br>"+ntitle+"<br>"+ncont);
 		
 		NoticeDTO ndto = new NoticeDTO();
 		ndto.setNtitle(ntitle);
@@ -198,7 +196,34 @@ else if(action.equals("write"))
 		else {
 			out.println("<script>alert('등록 실패');</script>");
 		}
-		
+}
+else if(action.equals("apply"))
+{
+	String adate = request.getParameter("adate");
+	String sid = request.getParameter("sid");
+	String uid = request.getParameter("uid");
+	
+	String dir = request.getParameter("dir");
+	String num = request.getParameter("num");
+	
+	ApplyDTO adto = new ApplyDTO();
+	adto.setAdate(adate);
+	adto.setSid(sid);
+	adto.setUid(uid);
+	
+	if(ApplyDAO.InsertApply(adto))
+	{
+		if(dir==null || dir.equals("") || dir == "" || dir.equals("null"))
+			out.println("<script>alert('신청되었습니다!'); location.href='apply.jsp';</script>");
+		else
+			out.println("<script>alert('신청되었습니다!'); location.href='apply.jsp?dir=" + dir + "&num=" + num +  "';</script>");
+	}
+	else
+	{
+		out.println("<script>alert('신청 실패');</script>");
+	}
+	
+	
 }
 
 %>

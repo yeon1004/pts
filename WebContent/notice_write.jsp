@@ -20,6 +20,12 @@ String wpid = (String)session.getAttribute("wpid");
 if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) response.sendRedirect("./login.jsp");
 %>
 
+<%
+if(!UsersDAO.IsManager(uid))
+{
+	out.println("<script>alert('권한이 없습니다.'); history.go(-1);</script>");
+}
+%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -86,11 +92,12 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 				<img class="img-circle" src="<%=filePath %>" style="width:70%;">
 			</span>
 			<h3><%=wpname %></h3><br>
-			<p>근무지 코드 : <%=wpid %></p>
+			<p>근무지 코드 [ <%=wpid %> ]</p>
 			<hr style="border: 1px solid rgb(232, 213, 41)"><br>
 			<p><a class="nav-item " href="./timetable.jsp">근무 시간표</a></p>
 			<p><a class="nav-item " href="./notice.jsp">공지사항</a></p>
 			<p><a class="nav-item " href="./apply.jsp">근무 신청</a></p>
+			<p><a class="nav-item " href="./apply_list.jsp">신청 목록</a></p>
 			<p><a class="nav-item " href="./pay.jsp">급여 관리</a></p>
 		</div>
 		<div class="col-sm-10 text-left" style="height: 100%; min-height: 100rem;">

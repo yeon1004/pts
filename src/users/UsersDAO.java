@@ -99,7 +99,7 @@ public class UsersDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				if(rs.getString(1).equals("∞¸∏Æ¿⁄"))
+				if(rs.getString(1).equals("Í¥ÄÎ¶¨Ïûê"))
 					return true;
 			}
 			
@@ -110,5 +110,28 @@ public class UsersDAO {
 		}
 		return false;
 	}
-}
+	
+	public String getUserName(String uid) {
+		Connection con = dbconnect.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String uname="";
+		try {
+			sql = "select uname from users where uid=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, uid);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				uname = rs.getString(1);
+			}
+			
+		}catch(Exception e) {
 
+		}finally {
+			DBClose.close(con,pstmt,rs);
+		}
+		return uname;
+	}
+}
