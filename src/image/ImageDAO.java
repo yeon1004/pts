@@ -36,7 +36,7 @@ public class ImageDAO {
 	
 	public String GetFileName(String target, String id)
 	{
-		String filename = "";
+		String filename = "noImage";
 		Connection con = dbconnect.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

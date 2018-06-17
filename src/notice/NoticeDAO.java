@@ -124,7 +124,7 @@ public class NoticeDAO {
 		Connection con = dbconnect.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		NoticeDTO dto = null;
+		NoticeDTO dto = new NoticeDTO();
 		
 		try {
 			sql = "SELECT ntitle, ncont, uid, ndate, nhit FROM notice WHERE nid=?";
@@ -133,13 +133,11 @@ public class NoticeDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				dto = new NoticeDTO();
 				dto.setNtitle(rs.getString(1));
 				dto.setNcont(rs.getString(2));
 				dto.setUid(rs.getString(3));
 				dto.setNdate(rs.getString(4));
 				dto.setNhit(rs.getInt(5)+1);
-			
 			}
 			
 		}catch(Exception e) {

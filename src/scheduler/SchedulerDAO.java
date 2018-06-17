@@ -51,7 +51,7 @@ public class SchedulerDAO {
 		ResultSet rs = null;
 		
 		try {
-			sql = "select aid from apply where sid=? and astatus='½ÂÀÎ'";
+			sql = "select aid from apply where sid=? and astatus='승인";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, sid);
 			rs = pstmt.executeQuery();
@@ -112,5 +112,39 @@ public class SchedulerDAO {
 		cal.set(2018, date.getMonth(), date.getDate());
 		cal.add(Calendar.DATE, num);
 		return cal.getTime();
+	}
+	
+	public boolean CheckSchedule(SchedulerDTO sdto)
+	{
+		Connection con = dbconnect.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		ArrayList<SchedulerDTO> schList = new ArrayList<SchedulerDTO>();
+		
+		try {
+			sql = "select sid, sday, stime, etime from scheduler where wpid = ? and sday = ? order by stime";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, Integer.parseInt(sdto.getWpid()));
+			pstmt.setString(2, sdto.getSday());
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Double stime = rs.getDouble(3);
+				Double etime = rs.getDouble(4);
+				
+				if(sdto.getStime() < stime) {
+					if(sdto.getEtime() > stime) return false;
+				}
+				else if(sdto.getStime() < etime){
+					return false;
+				}
+			}
+		}catch(Exception e) {
+			
+		}finally {
+			DBClose.close(con,pstmt,rs);
+		}
+		return true;
 	}
 }

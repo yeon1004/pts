@@ -17,6 +17,7 @@ create table users(
 	uaddr varchar(20),
     ulevel enum('관리자','직원') default '직원',
     wpid int not null,
+    pay double not null default 7530,
     primary key(uid),
     foreign key(wpid) references workplace(wpid)
 );
@@ -95,15 +96,18 @@ insert into workplace(wpname, wpnum, opentime, closetime) values('삼디야 강�
 insert into users(uid, upw, uname, uphone, uaddr, ulevel, wpid)
 	values ('test', password('1234'), '테스트', '010-0000-0000', '경기도 광주시', '관리자', 1);
 insert into users(uid, upw, uname, uphone, uaddr, ulevel, wpid)
-	values ('test1', password('1234'), '테스트', '010-0000-0000', '경기도 광주시', '관리자', 2);
+	values ('test1', password('1234'), '테스트1', '010-0000-0000', '경기도 광주시', '관리자', 2);
+insert into users(uid, upw, uname, uphone, uaddr, ulevel, wpid, pay)
+	values ('test2', password('1234'), '테스트2', '010-0000-0000', '경기도 광주시', '직원', 1, 8000);
+    
 
 show tables;
 select * from users;
 select * from workplace;
-
+select * from images;
 drop table apply;
 drop table scheduler;
-
+select * from images;
 select length(password('1234'));
 select uname from users where uid='test' and upw=password('1234');
 
@@ -127,12 +131,14 @@ insert into scheduler(sday, stime, etime, wpid) values('토',  13.5, 18.0, 1);
 insert into scheduler(sday, stime, etime, wpid) values('일',  9.0, 14.0, 1);
 insert into scheduler(sday, stime, etime, wpid) values('일',  14.0, 18.0, 1);
 select * from scheduler;
-
-
+show tables;
+delete from scheduler where sid = 8;
 select sid, sday, stime, etime, able from scheduler where wpid = 0 order by stime, sday;
+select sid, sday, stime, etime from scheduler where wpid = 1 order by stime, sday;
 
-insert into apply(astatus, sid, uid) values ('승인', 10, 'test');
+insert into apply(astatus, sid, uid) values ('승인', 11, 'test');
 select * from apply;
+update apply set astatus='승인' where aid = 1;
 select users.uname from scheduler, apply, users where scheduler.sid=10 and scheduler.sid = apply.sid and apply.uid=users.uid;
 
 select * from workplace;
@@ -140,133 +146,70 @@ select * from images;
 insert into workplace(wpname, wpnum) values('333', '33-333-33333');
 insert into workplace(wpid, filename) values(5, '222.jpg');
 
-CREATE TABLE IF NOT EXISTS `web04`.`images` (
-  `iid` INT(11) NOT NULL AUTO_INCREMENT,
-  `nid` INT(11) NULL DEFAULT NULL,
-  `wpid` INT(11) NULL DEFAULT NULL,
-  `filename` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`iid`),
-  INDEX `nid` (`nid` ASC),
-  INDEX `wpid` (`wpid` ASC),
-  CONSTRAINT `images_ibfk_1`
-    FOREIGN KEY (`nid`)
-    REFERENCES `web04`.`notice` (`nid`),
-  CONSTRAINT `images_ibfk_2`
-    FOREIGN KEY (`wpid`)
-    REFERENCES `web04`.`workplace` (`wpid`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+select aid, sday, stime, etime, uid, astatus from scheduler, apply where apply.sid = scheduler.sid and scheduler.wpid=1 order by sday;
+drop table pay;
+select * from pay;
+CREATE TABLE pay (
+  pid INT(11) NOT NULL AUTO_INCREMENT,
+  uid VARCHAR(20) NOT NULL,
+  sdate DATE NOT NULL,
+  edate DATE NOT NULL,
+  total INT(11) NOT NULL DEFAULT '0',
+  pstatus ENUM('미지급', '지급') NOT NULL DEFAULT '미지급',
+  PRIMARY KEY (pid),
+  FOREIGN KEY (uid)
+    REFERENCES users (uid)) AUTO_INCREMENT = 1;
+select aid, sday, stime, etime, apply.uid, astatus from scheduler, apply, users where apply.sid = scheduler.sid and scheduler.wpid=1 and sday = '화' and astatus = '신청' and apply.uid = users.uid and uname = '테스트' order by sday;
+insert into pay(uid, sdate, edate, total) values('test', '2018-06-01', '2018-06-30', 50000);
+select * from pay;
+select pid, pay.uid, sdate, edate, total, pstatus from pay, users where pay.uid = users.uid && wpid = 1;
+select * from users where uname like '%테%';
+select * from users;
+select aid, sday, stime, etime, apply.uid, astatus, uname 
+from scheduler, apply, users 
+where apply.sid = scheduler.sid and scheduler.wpid = 1 and uname like '%테%' order by sday;
 
-CREATE TABLE IF NOT EXISTS `web04`.`apply` (
-  `aid` INT(11) NOT NULL AUTO_INCREMENT,
-  `astatus` ENUM('신청', '승인', '거절') NULL DEFAULT '신청',
-  `adate` DATE NULL DEFAULT NULL,
-  `sid` INT(11) NOT NULL,
-  `uid` VARCHAR(20) NOT NULL,
-  PRIMARY KEY (`aid`),
-  INDEX `sid` (`sid` ASC),
-  INDEX `uid` (`uid` ASC),
-  CONSTRAINT `apply_ibfk_1`
-    FOREIGN KEY (`sid`)
-    REFERENCES `web04`.`scheduler` (`sid`),
-  CONSTRAINT `apply_ibfk_2`
-    FOREIGN KEY (`uid`)
-    REFERENCES `web04`.`users` (`uid`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+select aid, sday, stime, etime, apply.uid, astatus, uname
+from scheduler, apply, users 
+where apply.sid = scheduler.sid and scheduler.wpid = 1 and uname like '%테%' order by sday;
 
-CREATE TABLE IF NOT EXISTS `web04`.`notice` (
-  `nid` INT(11) NOT NULL AUTO_INCREMENT,
-  `uid` VARCHAR(20) NOT NULL,
-  `ntitle` VARCHAR(100) NOT NULL,
-  `ncont` VARCHAR(1000) NOT NULL,
-  `ndate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  `nhit` INT(11) NULL DEFAULT '0',
-  PRIMARY KEY (`nid`),
-  INDEX `uid` (`uid` ASC),
-  CONSTRAINT `notice_ibfk_1`
-    FOREIGN KEY (`uid`)
-    REFERENCES `web04`.`users` (`uid`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+select aid, sday, stime, etime, apply.uid, astatus, uname 
+from scheduler, apply, users 
+where apply.sid = scheduler.sid and scheduler.wpid = 1 and apply.uid = users.uid and uname like '%테%' order by sday desc;
 
-CREATE TABLE IF NOT EXISTS `web04`.`pay` (
-  `pid` INT(11) NOT NULL AUTO_INCREMENT,
-  `uid` VARCHAR(20) NOT NULL,
-  `sdate` DATETIME NOT NULL,
-  `edate` DATETIME NOT NULL,
-  `total` INT(11) NOT NULL DEFAULT '0',
-  `pstatus` TINYINT(1) NULL DEFAULT '0',
-  PRIMARY KEY (`pid`),
-  INDEX `uid` (`uid` ASC),
-  CONSTRAINT `pay_ibfk_1`
-    FOREIGN KEY (`uid`)
-    REFERENCES `web04`.`users` (`uid`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+select * from apply;
+select * from scheduler;
 
-CREATE TABLE IF NOT EXISTS `web04`.`reply` (
-  `rid` INT(11) NOT NULL AUTO_INCREMENT,
-  `nid` INT(11) NOT NULL,
-  `uid` VARCHAR(20) NOT NULL,
-  `rcont` VARCHAR(400) NOT NULL,
-  PRIMARY KEY (`rid`),
-  INDEX `nid` (`nid` ASC),
-  INDEX `uid` (`uid` ASC),
-  CONSTRAINT `reply_ibfk_1`
-    FOREIGN KEY (`nid`)
-    REFERENCES `web04`.`notice` (`nid`),
-  CONSTRAINT `reply_ibfk_2`
-    FOREIGN KEY (`uid`)
-    REFERENCES `web04`.`users` (`uid`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+select aid, astatus, adate, sid, uid from apply where astatus = '승인';
 
-CREATE TABLE IF NOT EXISTS `web04`.`scheduler` (
-  `sid` INT(11) NOT NULL AUTO_INCREMENT,
-  `sday` ENUM('월', '화', '수', '목', '금', '토', '일') NOT NULL,
-  `stime` DOUBLE NOT NULL,
-  `etime` DOUBLE NOT NULL,
-  `wpid` INT(11) NOT NULL,
-  PRIMARY KEY (`sid`),
-  INDEX `wpid` (`wpid` ASC),
-  CONSTRAINT `scheduler_ibfk_1`
-    FOREIGN KEY (`wpid`)
-    REFERENCES `web04`.`workplace` (`wpid`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+select sum(etime - stime) from scheduler, apply, users where apply.uid = users.uid and apply.sid = scheduler.sid and users.uid='test';
 
-CREATE TABLE IF NOT EXISTS `web04`.`users` (
-  `uid` VARCHAR(20) NOT NULL DEFAULT '',
-  `upw` VARCHAR(50) NOT NULL,
-  `uname` VARCHAR(10) NOT NULL,
-  `uphone` VARCHAR(20) NULL DEFAULT NULL,
-  `uaddr` VARCHAR(20) NULL DEFAULT NULL,
-  `ulevel` ENUM('관리자', '직원') NULL DEFAULT '직원',
-  `wpid` INT(11) NOT NULL,
-  PRIMARY KEY (`uid`),
-  INDEX `wpid` (`wpid` ASC),
-  CONSTRAINT `users_ibfk_1`
-    FOREIGN KEY (`wpid`)
-    REFERENCES `web04`.`workplace` (`wpid`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+select aid, adate, apply.sid, scheduler.stime, scheduler.etime, (scheduler.etime - scheduler.stime), apply.uid, users.uname 
+from apply, users, scheduler 
+where apply.uid = users.uid and apply.sid = scheduler.sid and users.uid = 'test';
 
-CREATE TABLE IF NOT EXISTS `web04`.`workplace` (
-  `wpid` INT(11) NOT NULL AUTO_INCREMENT,
-  `wpname` VARCHAR(30) NOT NULL,
-  `wpnum` VARCHAR(20) NOT NULL,
-  `opentime` DOUBLE NOT NULL DEFAULT '9',
-  `closetime` DOUBLE NOT NULL DEFAULT '18',
-  PRIMARY KEY (`wpid`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 4
-DEFAULT CHARACTER SET = utf8;
+select apply.uid, users.uname, sum(scheduler.etime - scheduler.stime) 
+from apply, users, scheduler 
+where apply.uid = users.uid and apply.sid = scheduler.sid group by uid;
+
+select * from users;
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('﻿ny1234', password('1234'), '이나연', '010-0000-0001', '경기도 용인시', '관리자', 7530, 1);
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('sr1235', password('1234'), '홍세리', '010-0000-0002', '서울시 송파구', '관리자', 7530, 2);
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('sy1236', password('1234'), '박시욱', '010-0000-0003', '경기도 안산시', '관리자', 7530, 3);
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('js1237', 'password('1234')', '최진선', '010-0000-0004', '경기도 광주시', '관리자', '7530', '4');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('ti1238', 'password('1234')', '이태일', '010-0000-0005', '서울시 송파구', '직원', '7530', '1');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('jh1239', 'password('1234')', '우지호', '010-0000-0006', '서울시 강남구', '직원', '7530', '1');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('jh1240', 'password('1234')', '안재효', '010-0000-0007', '서울시 종로구', '직원', '7530', '1');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('mh1241', 'password('1234')', '이민혁', '010-0000-0008', '서울시 광진구', '직원', '7530', '1');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('pk1242', 'password('1234')', '박경', '010-0000-0009', '서울시 종로구', '직원', '7530', '2');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('jh1243', 'password('1234')', '표지훈', '010-0000-0010', '서울시 광진구', '직원', '7530', '2');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('yg1244', 'password('1234')', '김유권', '010-0000-0011', '경기도 용인시', '직원', '7530', '2');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('ir1245', 'password('1234')', '아이린', '010-0000-0012', '경기도 용인시', '직원', '7530', '3');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('wd1246', 'password('1234')', '웬디', '010-0000-0013', '경기도 광주시', '직원', '7530', '3');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('yr1247', 'password('1234')', '예린', '010-0000-0014', '서울시 송파구', '직원', '7530', '3');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('sk1248', 'password('1234')', '슬기', '010-0000-0015', '서울시 송파구', '직원', '7530', '1');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('jy1249', 'password('1234')', '조이', '010-0000-0016', '경기도 광주시', '직원', '7530', '1');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('jy1250', 'password('1234')', '홍진영', '010-0000-0017', '경기도 용인시', '직원', '7530', '1');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('jk1251', 'password('1234')', '김종국', '010-0000-0018', '경기도 안산시', '직원', '7530', '4');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('js1252', 'password('1234')', '유재석', '010-0000-0019', '서울시 종로구', '직원', '7530', '4');
+INSERT INTO `web04`.`users` (`uid`, `upw`, `uname`, `uphone`, `uaddr`, `ulevel`, `pay`, `wpid`) VALUES ('hd1253', 'password('1234')', '강호동', '010-0000-0020', '경기도 안산시', '직원', '7530', '4');

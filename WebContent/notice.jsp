@@ -77,14 +77,14 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 <title>PTS - Part time Scheduler</title>
 </head>
 <body>
-<nav class="navbar navbar-inverse bg-ombra" id="navbar-custom">
-  <div class="container-fluid">
+<nav class="navbar navbar-inverse bg-color1" id="navbar-custom">
+  <div class="container-fluid bg-color1">
     <div class="navbar-header">
       <a class="navbar-brand" href="index.jsp" style="color: #ffffff; font-size: 3rem">PTS</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
-      	<p class="navbar-text" style="color: #ffffff;"><%=uid %>님</p>
+      	<li class="navbar-text" style="color: #ffffff;"><%=uid %>님</li>
       	<li><a href="./controller.jsp?action=userinfo" style="color: #ffffff;"><span class="glyphicon glyphicon-user"></span> 내정보</a></li>
         <li><a href="./controller.jsp?action=logout" style="color: #ffffff;"><span class="glyphicon glyphicon-log-out"></span> 로그아웃</a></li>
       </ul>
@@ -94,31 +94,55 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
   
 <div class="container-fluid text-center">    
   <div class="row content">
-		<div class="col-sm-2 sidenav bg-snow" style="height: 100%; min-height: 100rem;">
-			<%
-			String fileName = ImageDAO.GetFileName("wpid", wpid);
-			String filePath = "./img/"+"\\"+fileName;
-			%>
-			<span>
-				<img class="img-circle" src="<%=filePath %>" style="width:70%;">
-			</span>
-			<h3><%=wpname %></h3><br>
-			<p>근무지 코드 [ <%=wpid %> ]</p>
-			<hr style="border: 1px solid rgb(232, 213, 41)"><br>
-			<p><a class="nav-item " href="./timetable.jsp">근무 시간표</a></p>
-			<p><a class="nav-item " href="./notice.jsp">공지사항</a></p>
-			<p><a class="nav-item " href="./apply.jsp">근무 신청</a></p>
-			<p><a class="nav-item " href="./apply_list.jsp">신청 목록</a></p>
-			<p><a class="nav-item " href="./pay.jsp">급여 관리</a></p>
+		<div class="col-sm-2 sidenav" style="position: relative; top: 0; bottom: 0; left: 0;">
+			<div class="panel panel-default text-center">
+				<div class="panel-body text-center">
+					<%
+					String fileName = ImageDAO.GetFileName("wpid", wpid);
+					String filePath = "./img/"+"\\"+fileName;
+					if(fileName.equals("noImage")) filePath = "./img/"+"\\"+"default.png";
+					%>
+					<span>
+						<img class="img-circle" src="<%=filePath %>" style="width:70%;">
+					</span>
+					<h3><%=wpname %></h3>
+				</div>
+				<div class="panel-footer text-left" style="padding: 1rem;">
+					근무지 코드 <font style="font-weight: bold;"><%=wpid %></font>
+					<%
+					String level;
+					if(UsersDAO.IsManager(uid)) level="관리자";
+					else level="직원";
+					%>
+					<br>내 권한 <font style="font-weight: bold;"><%=level %></font>
+				</div>
+			</div>
+			<br>
+			<div class="text-center" style="box-sizing: border-box;">
+				<button type="button" class="btn btn-default btn-block btn-lg" style="margin: 1rem 0;" onclick="location.href='./timetable.jsp';">
+				근무 일정표</button>
+				<button type="button" class="btn btn-default btn-block btn-lg" style="margin: 1rem 0;" onclick="location.href='./apply.jsp';">
+				근무 신청</button>
+				<button type="button" class="btn btn-default btn-block btn-lg" style="margin: 1rem 0;" onclick="location.href='./apply_list.jsp';">
+				신청 목록</button>
+				<button type="button" class="btn btn-default btn-block btn-lg" style="margin: 1rem 0;" onclick="location.href='./notice.jsp';">
+				공지사항</button>
+				<button type="button" class="btn btn-default btn-block btn-lg" style="margin: 1rem 0;" onclick="location.href='./pay.jsp';">
+				급여 관리</button>
+				
+			</div>
 		</div>
 		<div class="col-sm-10 text-left" style="height: 100%; min-height: 100rem;">
-	    <!-- 컨텐츠 -->
-		<h1>공지사항</h1>
-		<hr>
-		<br>
+	    	<!-- 컨텐츠 -->
+			<br><br>
+			<div class="panel panel-default">
+			<div class="bg-color2 panel-heading text-left" style="padding: 2rem 5rem;">
+			<h1><a href="notice.jsp" class="text-color1">공지사항</a></h1>
+			</div>
+			<div class="panel-body text-center" style="padding: 5rem 8rem;">
 		<div class="panel panel-default" style="padding: 3rem 2rem;">
 		<table id="tbNotice" class="table table-striped text-center">
-			<tr>
+			<tr class="text-white">
 				<th style="width: 10%">번호</th>
 				<th style="width: 45%">제목</th>
 				<th style="width: 20%">작성자</th>
@@ -151,8 +175,7 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 			%>
 		</table>
 		</div>
-		<div class="panel panel-default text-center">
-			<div class="panel-heading">
+		<div class="panel panel-default text-center" style="padding: 2rem;">
 					<%
 						if(pg>BLOCK) {
 					%>
@@ -183,14 +206,12 @@ if(uid == null || uid.equals("") || wpname == null || wpname.equals("")) respons
 						[<a href="notice.jsp?pg=<%=allPage%>">▶▶</a>]
 					<%}
 					%>
-			</div>
-			<div class="panel-body">
 				<button type="button" class="btn btn-info bg-ombra" onclick="window.location='notice_write.jsp'" style="border: 0;">
 					글쓰기
 				</button>
-			</div>
 		</div>
-		
+		</div>
+		</div>
 	</div>
 </div>
 </div>

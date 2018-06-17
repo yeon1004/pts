@@ -35,18 +35,18 @@
 </script>
 	
 </head>
-<body>
-<table class="wrapper text-center"  style="background-color: #f4f5e9;">
+<body class="bg-color1">
+<table class="wrapper text-center bg-color1" style="border:0;">
 	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td>
+	<tr><td></td><td style="background-color: white;">
 		<!-- 로그인폼 -->
 		<img src="img/pts.png" width="300px"/>
+
+		<div class="panel panle-defualt">
 		<form name="loginForm" class="form-horizontal" action="./controller.jsp" method="post">
 		  <div class="form-group form-group-lg">
-		    <label class="control-label col-sm-2" for="uid">Username</label>
-
+		    <label class="control-label col-sm-2" for="uid">UserID</label>
 		      <input type="text" class="form-control" id="uid" name="uid" placeholder="아이디를 입력하세요.">
-
 		    <label class="control-label col-sm-2" for="upw">Password</label>
 		      <input type="password" class="form-control" id="upw" name="upw" placeholder="비밀번호를 입력하세요.">
 		  </div>
@@ -58,6 +58,7 @@
 		  <input type="hidden" name="action" value="login"/>
 		 </form>
 		 <p><a href="join.jsp">회원가입</a></p>
+		 </div>
 	</td><td></td></tr>
 	<tr><td></td><td></td><td></td></tr>
 </table>

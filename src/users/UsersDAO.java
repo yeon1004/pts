@@ -16,7 +16,7 @@ public class UsersDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		int wpid = -1;
+		String wpid = "";
 		try {
 			sql = "select wpid from users where uid=? and upw=password(?)";
 			pstmt = con.prepareStatement(sql);
@@ -25,7 +25,7 @@ public class UsersDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				wpid = rs.getInt(1);
+				wpid = rs.getString(1);
 			}
 			
 		}catch(Exception e) {
@@ -34,7 +34,7 @@ public class UsersDAO {
 			DBClose.close(con,pstmt,rs);
 		}
 		
-		return new Integer(wpid).toString();
+		return wpid;
 	}
 	
 	public String getWpname(String wpid) {

@@ -11,10 +11,9 @@ public class WorkplaceDAO {
 		dbconnect = new DBConnect();
 	}
 	
-	public String InsertWp(WorkplaceDTO dto) {
+	public boolean InsertWp(WorkplaceDTO dto) {
 		Connection con = dbconnect.getConnection();
 		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		
 		try {
 			sql = "insert into workplace(wpname, wpnum, opentime, closetime) values(?, ?, ?, ?)";
@@ -24,22 +23,30 @@ public class WorkplaceDAO {
 			pstmt.setString(2, dto.getWpnum());
 			pstmt.setDouble(3, dto.getOpentime());
 			pstmt.setDouble(4, dto.getClosetime());
-			
 			pstmt.execute();
 			
 		}catch(Exception e) {
 			e.printStackTrace();
-			return "";
+			return false;
 		}finally {
-			
+			DBClose.close(con,pstmt);
 		}
 
+		return true;
+	}
+	
+	public String getWpid(String wpname, String wpnum)
+	{
+		Connection con = dbconnect.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
 		try {
 			sql = "select wpid from workplace where wpname=? and wpnum=?";
 			pstmt = con.prepareStatement(sql);
 			
-			pstmt.setString(1, dto.getWpname());
-			pstmt.setString(2, dto.getWpnum());
+			pstmt.setString(1, wpname);
+			pstmt.setString(2, wpnum);
 			
 			rs = pstmt.executeQuery();
 			

@@ -1,7 +1,12 @@
 @charset "UTF-8";
 
+html{
+	height: 100%;
+}
+
 body{
 	font-family: 'Nanum Gothic', sans-serif;
+	height: 100%;
 }
 
 .wrapper{
@@ -12,42 +17,68 @@ body{
 	border-collapse: collapse;
 	text-align: center;
 	vertical-align: center;
+	background-color: #1f2945;
 }
 
 .wrapper td, th{
-	border: 0px solid black;
+	border: 0;
 	position: relative;
 	width: auto;
 	height: auto;
 	padding: 5rem;
-}
-
-.text-ombra{
-	color: rgb(83, 96, 122) !important;
-}
-
-.bg-gold{
-	background-color: rgb(232, 213, 41) !important;
-}
-
-.bg-slagheap{
-	background-color: rgb(169, 169, 162) !important;
-}
-
-.bg-ombra{
-	background-color: rgb(83, 96, 122) !important;
-}
-
-.bg-coldbreeze{
-	background-color: rgb(229, 230, 213) !important;
-}
-
-.bg-snow{
-	background-color: rgb(244, 245, 233) !important;
+	background-color: #1f2945;
 }
 
 .bg-gray{
-	background-color: #eeeeee !important;
+	background-color: #eeeeee;
+}
+
+.bg-darkgray{
+	background-color: #989898;
+}
+
+.text-white{
+	color: #ffffff;
+}
+
+.bg-color1{
+	background-color: #1f2945;
+}
+
+.text-color1{
+	color: #1f2945;
+}
+
+.bg-color2{
+	background-color: #5496b6;
+}
+
+.text-color2{
+	color: #5496b6;
+}
+
+.bg-color3{
+	background-color: #f4855d;
+}
+
+.text-color3{
+	color: #f4855d;
+}
+
+.bg-color4{
+	background-color: #b5d6c7;
+}
+
+.text-color4{
+	color: #b5d6c7;
+}
+
+.bg-color5{
+	background-color: #f6f1d6;
+}
+
+.text-color5{
+	color: #f6f1d6;
 }
 
 p a:link, a:visited, a:hover{
@@ -99,14 +130,14 @@ footer {
 }
 
 .timetable th{
-	color: rgb(83, 96, 122);
+	color: #ffffff;
 	font-size: 1.7rem;
 	width: 11.5%;
 	height: 3rem;
 	text-align: center;
 	vertical-align: middle;
-	border: 1px solid gray;
-	background-color: #eeeeee;
+	border: 1px solid #5496b6;
+	background-color: #5496b6;
 }
 
 .timetable td{
@@ -114,17 +145,37 @@ footer {
 	height: 3rem;
 	text-align: center;
 	vertical-align: middle;
-	border: 1px solid gray;
+	border: 1px solid #5496b6;
 }
 
-.cont{
-	width: 100%;
-	min-height: 500px;
-	box-sizing: border-box; 
+.timetable{
 	text-align: center;
-	padding: 20px;
-	bo
+	height:auto;
 }
+
+.applytable .time{
+	width: 8%;
+}
+
+.applytable th{
+	color: #ffffff;
+	font-size: 1.7rem;
+	width: 11.5%;
+	height: 3rem;
+	text-align: center;
+	vertical-align: middle;
+	border: 1px solid #4c8d6b;
+	background-color: #4c8d6b;
+}
+
+.applytable td{
+	width: 11.5%;
+	height: 3rem;
+	text-align: center;
+	vertical-align: middle;
+	border: 1px solid #4c8d6b;
+}
+
 .footer{
 	width: 100%;
 	height: 100px;
@@ -274,12 +325,6 @@ footer {
 	font-style: bold;
 }
 
-#tbView{
-	width: 80%;
-	margin-left: 10%;
-	box-sizing: border-box;
-}
-
 #tbView td, th{
 	border: 1px solid #D7DADB;
 	padding: 5px 15px;
@@ -330,3 +375,8 @@ footer {
 	border: 0;
 }
 
+h1 a:link,h1 a:visited, h1 a:hover{
+  background-color: transparent;
+  text-decoration: none;
+  font-weight: border;
+}

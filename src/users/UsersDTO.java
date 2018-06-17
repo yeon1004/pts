@@ -9,6 +9,12 @@ public class UsersDTO {
 	private String ulevel;
 	private String wpid;
 	
+	public UsersDTO()
+	{
+		uphone = "";
+		uaddr = "";
+	}
+	
 	public String getUid() {
 		return uid;
 	}

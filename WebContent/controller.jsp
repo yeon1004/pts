@@ -20,7 +20,7 @@
 <%
 request.setCharacterEncoding("UTF-8");
 String action = request.getParameter("action");
-if(action == "login" || action.equals("login"))
+if(action.equals("login"))
 {
 	String uid = request.getParameter("uid");
 	String upw = request.getParameter("upw");
@@ -61,13 +61,13 @@ else if(action.equals("wpjoin"))
 	realFolder = context.getRealPath(saveFolder);
 	
 	//upload폴더에 파일 업로드
-	String uploadPath = request.getRealPath("./img");
+	String uploadPath = request.getRealPath("img");
 	out.print("realPath : "+uploadPath);
 	int size = 10 * 1024 * 1024;
 	WorkplaceDTO wdto = new WorkplaceDTO();
 	
 	String file="", filename="", originFile="";
-	String wpname="", wpnum="", stime="", etime="";
+	String wpname="", wpnum="", stime="", etime="", wpcode="";
 	
 	MultipartRequest multi = null;
 			
@@ -82,7 +82,7 @@ else if(action.equals("wpjoin"))
 		wpname = multi.getParameter("wpname");
 		wpnum = multi.getParameter("wpnum1") + "-" + multi.getParameter("wpnum2") + "-" + multi.getParameter("wpnum3");
 		stime = multi.getParameter("stime");
-		etime = multi.getParameter("etimr");
+		etime = multi.getParameter("etime");
 		
 		wdto.setWpname(wpname);
 		wdto.setWpnum(wpnum);
@@ -97,26 +97,29 @@ else if(action.equals("wpjoin"))
 		originFile = multi.getOriginalFileName(file);
 		
 	}catch(Exception e){
-		throw new Exception("파일 업로드 문제 발생");
+		e.printStackTrace();
 	}
 	
+	String wpid = "0";
 	try{
+		
 		//workplace 등록
-		String wpid = WorkplaceDAO.InsertWp(wdto);
-		//이미지 등록
-		if(Integer.parseInt(wpid) >= 0)
+		//wpid = WorkplaceDAO.InsertWp(wdto);
+		if(WorkplaceDAO.InsertWp(wdto))
 		{
+			wpid = WorkplaceDAO.getWpid(wpname, wpnum);
 			ImageDTO idto = new ImageDTO();
 			idto.setWpid(wpid);
 			idto.setFilename(filename);
 			ImageDAO.InsertImage(idto);
 		}
-		out.println("<br>wpid: " + wpid + "<br>wpname: " + wpname + "<br>wpnum:" + wpnum);
+		out.println("<br>wpid: " + wpid + "<br>wpname: " + wpname + "<br>wpnum:" + wpnum + "<br>stime:" + stime + "<br>etime:" + etime);
 	}catch(Exception e){
-		throw new Exception("디비 문제 발생");
+		e.printStackTrace();
 	}
 	
-	response.sendRedirect("join.jsp?level=1&step=3");
+	response.sendRedirect("join.jsp?level=1&step=3&wpid="+wpid);
+	
 }
 else if(action.equals("userjoin"))
 {
@@ -141,7 +144,7 @@ else if(action.equals("userjoin"))
 		
 		//세션등록
 		session.setAttribute("uid", uid);
-		session.setAttribute("wpid", new Integer(wpid));
+		session.setAttribute("wpid", wpid);
 		session.setAttribute("wpname", UsersDAO.getWpname(wpid));
 		
 		out.println("<script> alert('가입이 완료되었습니다!'); location.href='index.jsp';</script>");
@@ -161,15 +164,23 @@ else if(action.equals("newsche"))
 	Double d_etime = Double.parseDouble(etime_hour);
 	if(etime_minute.equals("30")) d_etime += 0.5;
 	
+	if(d_stime == d_etime || d_stime > d_etime) out.println("<script> alert('잘못된 시간 입력입니다.'); history.go(-1); </script>");
+	
 	SchedulerDTO sdto = new SchedulerDTO();
 	sdto.setSday(sday);
 	sdto.setStime(d_stime);
 	sdto.setEtime(d_etime);
 	sdto.setWpid(wpid);
 	
-	SchedulerDAO.InsertNewSchedule(sdto);
-	
-	response.sendRedirect("./newtimetable.jsp");
+	if(SchedulerDAO.CheckSchedule(sdto))
+	{
+		SchedulerDAO.InsertNewSchedule(sdto);
+		response.sendRedirect("./newschedule.jsp");
+	}
+	else
+	{
+		out.println("<script> alert('기존 근무 시간과 겹칩니다.'); history.go(-1); </script>");
+	}
 }
 //리스트
 else if(action.equals("list"))
@@ -187,7 +198,7 @@ else if(action.equals("write"))
 		
 		NoticeDTO ndto = new NoticeDTO();
 		ndto.setNtitle(ntitle);
-		ndto.setNcont(ncont);
+		ndto.setNcont(ncont.replace("\r\n","<br>"));
 		ndto.setUid(writer);
 		
 		if(NoticeDAO.insertWrite(ndto)) {
@@ -225,5 +236,50 @@ else if(action.equals("apply"))
 	
 	
 }
-
+else if(action.equals("apply_ok")){
+	int[] idx = new int[10];
+	String temp;
+	for(int i = 0; i <= 5; i++)
+	{
+		temp = "idx" + Integer.toString(i);
+		if(request.getParameter(temp)!=null)
+		{
+			idx[i] = Integer.parseInt(request.getParameter(temp));
+		}
+		else idx[i] = 0;
+	}
+	for(int x : idx){
+		if(x!=0)
+		{
+			if(!ApplyDAO.ApplySetOk(x))
+				out.println("<script>alert('승인에 실패했습니다! 이미 승인된 다른 신청이 있는지 확인해주세요.');</script>");;
+		}
+	}
+	out.println("<script>alert('승인 처리 되었습니다!'); location.href='apply_list.jsp';</script>");
+}
+else if(action.equals("apply_no")){
+	int[] idx = new int[10];
+	String temp;
+	for(int i = 0; i <= 5; i++)
+	{
+		temp = "idx" + Integer.toString(i);
+		if(request.getParameter(temp)!=null)
+		{
+			idx[i] = Integer.parseInt(request.getParameter(temp));
+		}
+		else idx[i] = 0;
+	}
+	for(int x : idx){
+		if(x!=0)
+		{
+			if(!ApplyDAO.ApplySetNo(x))
+				out.println("<script>alert('거절에 실패했습니다.');</script>");;
+		}
+	}
+	out.println("<script>alert('거절 처리 되었습니다!'); location.href='apply_list.jsp';</script>");
+}
+else
+{
+	response.sendRedirect("./index.jsp");
+}
 %>
